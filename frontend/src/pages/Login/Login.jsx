@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
-import login_image2 from "../../assets/luke-chesser-CxBx_J3yp9g-unsplash.jpg"
+import login_image2 from "../../assets/luke-chesser-CxBx_J3yp9g-unsplash.jpg";
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -56,19 +56,29 @@ const Login = () => {
                     <div className="w-[48%] text-center lg:text-left text-white">
                         <h1 className="text-5xl font-bold ">Welcome to MediFlow!!</h1>
                         <p className="py-6">
-                            Log in to access your account and explore our wide range of medical equipment solutions. Your journey to
-                            better healthcare starts here.
+                            Log in to access your account and explore our wide range of medical equipment solutions.
+                            Your journey to better healthcare starts here.
                         </p>
                     </div>
                     <div className="card w-full max-w-sm shrink-0 shadow-[0px_0px_30px_rgba(0,0,0,0.3)] rounded-2xl">
                         <form className="card-body" onSubmit={handleLogin}>
                             <div className="form-control">
-                                <label className="label"><span className="label-text font-bold text-white">Username or Email</span></label>
-                                <input type="text" placeholder="Username or Email" className="input input-bordered"
-                                    value={username} onChange={(e) => setUsername(e.target.value)} required />
+                                <label className="label">
+                                    <span className="label-text font-bold text-white">Username or Email</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Username or Email"
+                                    className="input input-bordered"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    required
+                                />
                             </div>
                             <div className="form-control">
-                                <label className="label"><span className="label-text font-bold text-white">Password</span></label>
+                                <label className="label">
+                                    <span className="label-text font-bold text-white">Password</span>
+                                </label>
                                 <div className="relative">
                                     <input
                                         type={showPassword ? "text" : "password"}
@@ -89,7 +99,12 @@ const Login = () => {
                             </div>
                             {error && <p className="text-red-500">{error}</p>}
                             <div className="form-control mt-6">
-                                <button type="submit" className="btn bg-mediflow-orange border-none hover:bg-mediflow-crimson shadow-xl text-white w-20">Login</button>
+                                <button
+                                    type="submit"
+                                    className="btn bg-mediflow-orange border-none hover:bg-mediflow-crimson shadow-xl text-white w-20"
+                                >
+                                    Login
+                                </button>
                             </div>
                         </form>
                     </div>

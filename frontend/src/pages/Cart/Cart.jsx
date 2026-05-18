@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
@@ -20,7 +20,7 @@ const Cart = () => {
 
         try {
             const orderData = {
-                items: cart.map(item => ({
+                items: cart.map((item) => ({
                     equipment_id: item.equipment_id,
                     quantity: item.quantity,
                     price: item.price,
@@ -28,13 +28,9 @@ const Cart = () => {
                 totalAmount: getTotalPrice(),
             };
 
-            const response = await axios.post(
-                `${API_BASE_URL}/create-order`,
-                orderData,
-                {
-                    headers: { Authorization: `Bearer ${user.token}` },
-                }
-            );
+            const response = await axios.post(`${API_BASE_URL}/create-order`, orderData, {
+                headers: { Authorization: `Bearer ${user.token}` },
+            });
 
             clearCart();
             toast.success(`Order placed successfully! Order ID: ${response.data.orderId}`);
@@ -51,8 +47,19 @@ const Cart = () => {
 
             {cart.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-24 w-24 text-gray-300 mb-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
                     </svg>
                     <p className="text-xl text-gray-500 mb-4">Your cart is empty</p>
                     <Link to="/buy-equipment" className="btn btn-primary">
@@ -76,10 +83,15 @@ const Cart = () => {
                                             type="number"
                                             className="border p-1 w-16 text-center"
                                             value={item.quantity || 1}
-                                            onChange={(e) => updateQuantity(item.equipment_id, parseInt(e.target.value))}
+                                            onChange={(e) =>
+                                                updateQuantity(item.equipment_id, parseInt(e.target.value))
+                                            }
                                             min="1"
                                         />
-                                        <button className="text-red-600 ml-4" onClick={() => removeFromCart(item.equipment_id)}>
+                                        <button
+                                            className="text-red-600 ml-4"
+                                            onClick={() => removeFromCart(item.equipment_id)}
+                                        >
                                             <FaTrash />
                                         </button>
                                     </div>

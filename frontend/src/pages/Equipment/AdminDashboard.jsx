@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
@@ -16,17 +16,11 @@ const AdminPage = () => {
         image_url: "",
     });
 
-
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 
     const token = JSON.parse(localStorage.getItem("user"))?.token;
 
-    useEffect(() => {
-        fetchEquipment();
-    }, []);
-
-    const fetchEquipment = async () => {
+    const fetchEquipment = useCallback(async () => {
         try {
             const response = await axios.get(`${API_BASE_URL}/equipment`);
             setEquipment(response.data);
@@ -36,7 +30,11 @@ const AdminPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [API_BASE_URL]);
+
+    useEffect(() => {
+        fetchEquipment();
+    }, [fetchEquipment]);
 
     const handleEdit = (equip) => {
         setEditing(equip);
@@ -59,11 +57,9 @@ const AdminPage = () => {
 
     const handleSaveEdit = async () => {
         try {
-            await axios.put(
-                `${API_BASE_URL}/modify-equipment/${editing.equipment_id}`,
-                editing,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await axios.put(`${API_BASE_URL}/modify-equipment/${editing.equipment_id}`, editing, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             setEditing(null);
             fetchEquipment();
             toast.success("Equipment updated successfully");
@@ -165,9 +161,7 @@ const AdminPage = () => {
                                             <input
                                                 type="number"
                                                 value={editing.quantity}
-                                                onChange={(e) =>
-                                                    setEditing({ ...editing, quantity: e.target.value })
-                                                }
+                                                onChange={(e) => setEditing({ ...editing, quantity: e.target.value })}
                                                 className="border rounded p-1 w-full"
                                             />
                                         ) : (
@@ -183,19 +177,23 @@ const AdminPage = () => {
                                                 className="border rounded p-1 w-full"
                                             />
                                         ) : (
-                                            <img src={equip.image_url} alt={equip.name} className="w-16 h-16 object-cover rounded-lg mx-auto" />
+                                            <img
+                                                src={equip.image_url}
+                                                alt={equip.name}
+                                                className="w-16 h-16 object-cover rounded-lg mx-auto"
+                                            />
                                         )}
                                     </td>
                                     <td className="p-2 flex justify-center gap-2">
                                         {editing?.equipment_id === equip.equipment_id ? (
-                                            <button
-                                                className="btn btn-success btn-sm"
-                                                onClick={handleSaveEdit}
-                                            >
+                                            <button className="btn btn-success btn-sm" onClick={handleSaveEdit}>
                                                 Save
                                             </button>
                                         ) : (
-                                            <button className="btn btn-warning btn-sm" onClick={() => handleEdit(equip)}>
+                                            <button
+                                                className="btn btn-warning btn-sm"
+                                                onClick={() => handleEdit(equip)}
+                                            >
                                                 <FaEdit />
                                             </button>
                                         )}
@@ -233,7 +231,6 @@ const AdminPage = () => {
                             <td className="p-2">
                                 <input
                                     type="number"
-
                                     value={newEquipment.price}
                                     onChange={(e) => setNewEquipment({ ...newEquipment, price: e.target.value })}
                                     placeholder="Price"

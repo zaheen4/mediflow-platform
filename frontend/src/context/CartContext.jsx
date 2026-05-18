@@ -24,9 +24,7 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = (equip) => {
         setCart((prevCart) => {
-            const itemIndex = prevCart.findIndex(
-                (item) => item.equipment_id === equip.equipment_id
-            );
+            const itemIndex = prevCart.findIndex((item) => item.equipment_id === equip.equipment_id);
 
             if (itemIndex !== -1) {
                 const updatedCart = [...prevCart];
@@ -64,11 +62,7 @@ export const CartProvider = ({ children }) => {
 
     const updateQuantity = (id, newQuantity) => {
         setCart((prevCart) =>
-            prevCart.map((item) =>
-                item.equipment_id === id
-                    ? { ...item, quantity: Math.max(1, newQuantity) }
-                    : item
-            )
+            prevCart.map((item) => (item.equipment_id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item))
         );
     };
 

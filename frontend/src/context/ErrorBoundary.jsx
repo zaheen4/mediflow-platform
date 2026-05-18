@@ -23,10 +23,7 @@ class ErrorBoundary extends Component {
                         <p className="text-gray-600 mb-4">
                             An unexpected error occurred. Please try refreshing the page.
                         </p>
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="btn btn-primary"
-                        >
+                        <button onClick={() => window.location.reload()} className="btn btn-primary">
                             Refresh Page
                         </button>
                     </div>

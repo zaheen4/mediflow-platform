@@ -44,8 +44,12 @@ const Profile = () => {
             <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
                 <div className="mb-6">
                     <h3 className="text-xl font-semibold mb-2">Account Information</h3>
-                    <p className="text-gray-600"><strong>Username:</strong> {user.username}</p>
-                    <p className="text-gray-600"><strong>Role:</strong> {user.role}</p>
+                    <p className="text-gray-600">
+                        <strong>Username:</strong> {user.username}
+                    </p>
+                    <p className="text-gray-600">
+                        <strong>Role:</strong> {user.role}
+                    </p>
                 </div>
 
                 <div className="divider"></div>
@@ -62,7 +66,11 @@ const Profile = () => {
                                 className="input input-bordered w-full pr-10"
                                 required
                             />
-                            <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2" onClick={() => setShowCurrent(!showCurrent)}>
+                            <button
+                                type="button"
+                                className="absolute right-3 top-1/2 -translate-y-1/2"
+                                onClick={() => setShowCurrent(!showCurrent)}
+                            >
                                 {showCurrent ? <FaEyeSlash /> : <FaEye />}
                             </button>
                         </div>
@@ -78,7 +86,11 @@ const Profile = () => {
                                 className="input input-bordered w-full pr-10"
                                 required
                             />
-                            <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2" onClick={() => setShowNew(!showNew)}>
+                            <button
+                                type="button"
+                                className="absolute right-3 top-1/2 -translate-y-1/2"
+                                onClick={() => setShowNew(!showNew)}
+                            >
                                 {showNew ? <FaEyeSlash /> : <FaEye />}
                             </button>
                         </div>
@@ -94,7 +106,11 @@ const Profile = () => {
                                 className="input input-bordered w-full pr-10"
                                 required
                             />
-                            <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2" onClick={() => setShowConfirm(!showConfirm)}>
+                            <button
+                                type="button"
+                                className="absolute right-3 top-1/2 -translate-y-1/2"
+                                onClick={() => setShowConfirm(!showConfirm)}
+                            >
                                 {showConfirm ? <FaEyeSlash /> : <FaEye />}
                             </button>
                         </div>

@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const { executeQuery } = require('../utils/db_utils');
 const { generateToken } = require('../utils/auth_utils');
 
+const { verifyToken } = require('../utils/auth_utils');
+
 const router = express.Router();
 
 // User Registration Route
@@ -66,3 +68,40 @@ router.post('/login', async (req, res) => {
 });
 
 module.exports = router;
+
+// Change Password Route
+router.put('/change-password', verifyToken, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!newPassword || newPassword.length < 6) {
+        return res.status(400).json({ error: "New password must be at least 6 characters" });
+    }
+
+    try {
+        const userResult = await executeQuery(
+            "SELECT * FROM users WHERE user_id = ?",
+            [req.user.user_id]
+        );
+
+        if (userResult.length === 0) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const user = userResult[0];
+        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: "Current password is incorrect" });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await executeQuery(
+            "UPDATE users SET password = ? WHERE user_id = ?",
+            [hashedPassword, req.user.user_id]
+        );
+
+        res.status(200).json({ message: "Password changed successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
