@@ -1,4 +1,3 @@
-import React from "react";
 import consult from "../../assets/servicesicons/consult.svg"
 import rent from "../../assets/servicesicons/rent.svg"
 import shop from "../../assets/servicesicons/shopping_bag.svg"

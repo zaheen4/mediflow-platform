@@ -1,6 +1,3 @@
-import React from "react";
-
-
 import zaheen from "../../assets/images/zaheen.jpg";
 import sahil from "../../assets/images/sahil2.jpeg";
 import arafath from "../../assets/images/arafath.jpg";

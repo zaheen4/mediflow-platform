@@ -4,22 +4,15 @@
 Before setting up the project, ensure you have the following installed:
 
 ### 1. Node.js & NPM
-If you don't have Node.js installed, download and install it from [Node.js official website](https://nodejs.org/).
-After installation, verify the installation by running:
+Download and install from [Node.js official website](https://nodejs.org/).
+Verify installation:
 ```sh
 node -v
 npm -v
 ```
 
-### 2. Python
-Ensure Python is installed. You can download it from [Python official website](https://www.python.org/).
-Verify the installation with:
-```sh
-python --version
-```
-
-### 3. MySQL
-Install MySQL from [MySQL official website](https://www.mysql.com/) if you haven't already.
+### 2. MySQL
+Install MySQL from [MySQL official website](https://www.mysql.com/).
 Ensure MySQL is running and accessible.
 
 ---
@@ -33,78 +26,107 @@ cd mediflow-react-app
 ```
 
 ### 2. Install Frontend Dependencies
-Navigate to the project root directory (where the frontend code is located) and install dependencies:
 ```sh
 npm install
 ```
 
-### 3. Set Up Backend Environment and Install Dependencies
-Navigate to the backend folder (`mediflow-backend`), create a virtual environment, and install Python dependencies:
+### 3. Install Backend Dependencies
 ```sh
-cd ./mediflow-backend
-python -m venv mediflowenv  
-source mediflowenv/bin/activate  # On Windows use: mediflowenv\Scripts\activate 
-pip install -r requirements.txt
+cd mediflow-backend
+npm install
+cd ..
 ```
-
 
 ---
 
 ## Database Setup
 
 ### 1. Import the SQL File
-Use the provided SQL file to set up your MySQL database:
 ```sh
-mysql -u root -p < mediflowdb.sql   
+mysql -u root -p < mediflow-backend/mediflowdb.sql
 ```
 Enter your MySQL root password when prompted.
 
-### 2. Configure Database Connection
-Update the `mediflow-backend/db_connection.py` file with your MySQL credentials:
-```python
-DB_HOST = "localhost"
-DB_USER = "your_mysql_user"
-DB_PASSWORD = "your_mysql_password"
-DB_NAME = "mediflowdb"
-```
+### 2. Configure Environment Variables
 
-### 3. Set Up the `.env` File
-#### Option 1: Manual Setup
-Create a `.env` file in the `mediflow-backend` directory and add:
+#### Backend
+Create a `.env` file in `mediflow-backend/`:
 ```
+PORT=5000
+DB_HOST=localhost
+DB_USER=your_mysql_user
+DB_PASSWORD=your_mysql_password
+DB_NAME=mediflowdb
 SECRET_KEY=your_secret_key
+JWT_EXPIRATION=1h
 ```
 
-#### Option 2: Use the Secret Key Generator
-Run the following command inside the `mediflow-backend` directory to generate or update the secret key automatically:
+Or copy the template:
 ```sh
-python generate_secret_key.py
+cp mediflow-backend/.env.example mediflow-backend/.env
 ```
-This will replace the existing `SECRET_KEY` in the `.env` file with a new securely generated key. If the `.env` file does not exist, it will be created.
+
+#### Frontend
+Create a `.env` file in the project root:
+```
+VITE_API_BASE_URL=http://localhost:5000
+```
+
+Or copy the template:
+```sh
+cp .env.example .env
+```
 
 ---
 
 ## Running the Application
 
 ### 1. Start the Backend
-Navigate to the backend folder `mediflow-backend` and run: 
 ```sh
-source mediflowenv/bin/activate  # On Windows use: mediflowenv\Scripts\activate 
-python app.py
+cd mediflow-backend
+npm start
 ```
+Server runs on `http://localhost:5000`
 
-### 2. Start the Frontend (in a new Terminal)
-Navigate to the project root directory(cloned folder) and run:
+### 2. Start the Frontend (in a new terminal)
 ```sh
 npm run dev
 ```
+App runs on `http://localhost:5173`
 
-The project should now be online.
+---
+
+## Default Admin Account
+After importing the SQL file, a default admin account is available:
+- **Username**: `Admin99`
+- **Password**: Check the SQL dump for the hashed password (you'll need to set your own or register a new admin)
+
+---
+
+## API Endpoints
+
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/register` | Register a new user |
+| POST | `/login` | Login and receive JWT token |
+
+### Equipment (Public)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/equipment` | Get all equipment |
+| GET | `/equipment/:id` | Get single equipment |
+
+### Equipment (Admin Only — requires Bearer token)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/add-equipment` | Add new equipment |
+| PUT | `/modify-equipment/:id` | Update equipment |
+| DELETE | `/delete-equipment/:id` | Delete equipment |
 
 ---
 
 ## Additional Notes
-- Ensure MySQL is running before starting the backend.
-- Replace `your_mysql_user`, `your_mysql_password` with your actual MySQL credentials.
-- If you encounter issues, check for missing dependencies and reinstall as necessary.
-
+- Ensure MySQL is running before starting the backend
+- The `.env` files contain sensitive data and are excluded from version control
+- Use `.env.example` files as templates for configuration

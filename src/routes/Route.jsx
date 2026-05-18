@@ -3,8 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "../components/Home/Home";
 import Login from "../components/Login/Login";
 import WelcomePage from "../components/Home/WelcomePage";
-import DummyPage from "../components/Dummy/DummyPage";
-import Register from "../components/Register/Regsiter";
+import Register from "../components/Register/Register";
 import BuyEquipment from "../components/Equipment/BuyEquipment";
 import AdminPage from "../components/Equipment/AdminPage";
 import About from "../components/About/About";
@@ -26,15 +25,11 @@ export const router = createBrowserRouter([
             element: <Login />,
 
          },
-         {
-            path: "/register",
-            element: <Register />,
-         },
+          {
+             path: "/register",
+             element: <Register />,
+          },
 
-         {
-            path: "/dummy-page",
-            element: <DummyPage />,
-         },
           {
              path: "/buy-equipment",
              element: (
