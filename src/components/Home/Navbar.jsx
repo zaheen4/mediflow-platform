@@ -1,6 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext";
+import { CartContext } from "../Context/CartContext";
 import { FaCartShopping } from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
 import user_icon from "../../assets/user_icon.svg"
@@ -9,8 +10,9 @@ import user_icon from "../../assets/user_icon.svg"
 
 const Navbar = () => {
    const { user, logout } = useContext(AuthContext);
+   const { getTotalItems } = useContext(CartContext);
    const navigate = useNavigate();
-   const location = useLocation(); // Get current URL path
+   const location = useLocation();
 
    
    const handleLogout = () => {
@@ -98,14 +100,19 @@ const Navbar = () => {
          </div>
 
          {/* Navbar End */}
-         <div className="navbar-end">
-            {/* {location.pathname === "/buy-equipment" && user ? (
-               <div className="btn btn-outline btn-primary w-24 mr-2">
-                  <FaCartShopping /> Cart
-               </div>
-            ) : null} */}
+          <div className="navbar-end">
+             {user && (
+                <Link to="/cart" className="btn btn-ghost btn-circle mr-2 relative">
+                   <FaCartShopping className="text-xl" />
+                   {getTotalItems() > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                         {getTotalItems()}
+                      </span>
+                   )}
+                </Link>
+             )}
 
-            {user ? (
+             {user ? (
                <div className="dropdown dropdown-end mr-2">
                   <div tabIndex={0} className="btn btn-ghost flex items-center gap-2">
                      <img
