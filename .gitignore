@@ -7,12 +7,14 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules/
-dist
-dist-ssr
+# Compiled output
+frontend/dist
+frontend/dist-ssr
 *.local
-myenv/
-__pycache__/
+
+# Dependencies
+frontend/node_modules/
+backend/node_modules/
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +26,7 @@ __pycache__/
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files (keep examples)
+.env
+!.env.example

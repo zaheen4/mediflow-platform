@@ -1,4 +1,4 @@
-# Mediflow - Installation & Deployment Guide
+# MediFlow Platform - Installation & Deployment Guide
 
 ## Prerequisites
 Before setting up the project, ensure you have the following installed:
@@ -21,18 +21,20 @@ Ensure MySQL is running and accessible.
 
 ### 1. Clone the Repository
 ```sh
-git clone https://github.com/zaheen4/mediflow-react-app.git
-cd mediflow-react-app
+git clone https://github.com/zaheen4/mediflow-platform.git
+cd mediflow-platform
 ```
 
 ### 2. Install Frontend Dependencies
 ```sh
+cd frontend
 npm install
+cd ..
 ```
 
 ### 3. Install Backend Dependencies
 ```sh
-cd mediflow-backend
+cd backend
 npm install
 cd ..
 ```
@@ -43,14 +45,14 @@ cd ..
 
 ### 1. Import the SQL File
 ```sh
-mysql -u root -p < mediflow-backend/mediflowdb.sql
+mysql -u root -p < backend/mediflowdb.sql
 ```
 Enter your MySQL root password when prompted.
 
 ### 2. Configure Environment Variables
 
 #### Backend
-Create a `.env` file in `mediflow-backend/`:
+Create a `.env` file in `backend/`:
 ```
 PORT=5000
 DB_HOST=localhost
@@ -63,18 +65,18 @@ JWT_EXPIRATION=1h
 
 Or copy the template:
 ```sh
-cp mediflow-backend/.env.example mediflow-backend/.env
+cp backend/.env.example backend/.env
 ```
 
 #### Frontend
-Create a `.env` file in the project root:
+Create a `.env` file in `frontend/`:
 ```
 VITE_API_BASE_URL=http://localhost:5000
 ```
 
 Or copy the template:
 ```sh
-cp .env.example .env
+cp frontend/.env.example frontend/.env
 ```
 
 ---
@@ -83,13 +85,14 @@ cp .env.example .env
 
 ### 1. Start the Backend
 ```sh
-cd mediflow-backend
+cd backend
 npm start
 ```
 Server runs on `http://localhost:5000`
 
 ### 2. Start the Frontend (in a new terminal)
 ```sh
+cd frontend
 npm run dev
 ```
 App runs on `http://localhost:5173`
@@ -125,6 +128,23 @@ After importing the SQL file, a default admin account is available:
 | DELETE | `/delete-equipment/:id` | Delete equipment |
 
 ---
+
+## Project Structure
+```
+mediflow-platform/
+├── frontend/          # React + Vite frontend
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+├── backend/           # Express + MySQL backend
+│   ├── routes/
+│   ├── utils/
+│   ├── app.js
+│   └── package.json
+├── todo/              # Improvement roadmap
+└── README.md
+```
 
 ## Additional Notes
 - Ensure MySQL is running before starting the backend
