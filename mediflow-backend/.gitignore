@@ -38,4 +38,11 @@ jspm_packages/
 # Build directories
 dist/
 build/
-myenv/
+
+# Python leftovers (if any)
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+mediflowenv/
