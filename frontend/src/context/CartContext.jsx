@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext";
+import { toast } from "react-toastify";
 
 export const CartContext = createContext();
 
@@ -30,15 +31,35 @@ export const CartProvider = ({ children }) => {
             if (itemIndex !== -1) {
                 const updatedCart = [...prevCart];
                 updatedCart[itemIndex].quantity += 1;
+                toast.info(`${equip.name} quantity updated in cart`, {
+                    position: "bottom-right",
+                    autoClose: 2000,
+                    theme: "light",
+                });
                 return updatedCart;
             } else {
+                toast.success(`${equip.name} added to cart`, {
+                    position: "bottom-right",
+                    autoClose: 2000,
+                    theme: "light",
+                });
                 return [...prevCart, { ...equip, quantity: 1 }];
             }
         });
     };
 
     const removeFromCart = (id) => {
-        setCart((prevCart) => prevCart.filter((item) => item.equipment_id !== id));
+        setCart((prevCart) => {
+            const item = prevCart.find((item) => item.equipment_id === id);
+            if (item) {
+                toast.info(`${item.name} removed from cart`, {
+                    position: "bottom-right",
+                    autoClose: 2000,
+                    theme: "light",
+                });
+            }
+            return prevCart.filter((item) => item.equipment_id !== id);
+        });
     };
 
     const updateQuantity = (id, newQuantity) => {
