@@ -8,12 +8,33 @@ const router = express.Router();
 // User Registration Route
 router.post('/register', async (req, res) => {
     const { username, password, role, email } = req.body;
+
+    if (!username || username.length < 3 || username.length > 50) {
+        return res.status(400).json({ error: "Username must be between 3 and 50 characters" });
+    }
+
+    if (!password || password.length < 6) {
+        return res.status(400).json({ error: "Password must be at least 6 characters" });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+        return res.status(400).json({ error: "Invalid email format" });
+    }
+
+    if (!role || !['Admin', 'User'].includes(role)) {
+        return res.status(400).json({ error: "Role must be 'Admin' or 'User'" });
+    }
+
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const query = "INSERT INTO users (username, password, role, email) VALUES (?, ?, ?, ?)";
         await executeQuery(query, [username, hashedPassword, role, email]);
         res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ error: "Username or email already exists" });
+        }
         res.status(500).json({ error: error.message });
     }
 });
