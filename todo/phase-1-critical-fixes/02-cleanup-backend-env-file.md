@@ -4,7 +4,7 @@
 Remove leftover Flask configuration variables from the backend `.env` and ensure only Node.js/Express relevant variables exist.
 
 ## Files to Touch
-- `mediflow-backend/.env`
+- `backend/.env`
 
 ## Current State
 The `.env` contains Flask-specific variables that are irrelevant:
@@ -19,7 +19,7 @@ FLASK_DEBUG=True
 
 ## Steps
 
-1. Replace the entire contents of `mediflow-backend/.env` with:
+1. Replace the entire contents of `backend/.env` with:
 ```
 # Server Configuration
 PORT=5000
@@ -39,4 +39,4 @@ JWT_EXPIRATION=1h
 
 ## Verification
 - The file should contain only Node.js/Express relevant environment variables
-- Backend should still start normally with `node mediflow-backend/app.js`
+- Backend should still start normally with `node backend/app.js`

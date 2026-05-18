@@ -4,11 +4,11 @@
 Create a reusable React component that wraps routes and checks authentication before rendering. Unauthenticated users get redirected to `/login`.
 
 ## Files to Create
-- `src/components/Context/ProtectedRoute.jsx`
+- `frontend/src/context/ProtectedRoute.jsx`
 
 ## Steps
 
-1. Create `src/components/Context/ProtectedRoute.jsx`:
+1. Create `frontend/src/context/ProtectedRoute.jsx`:
 ```jsx
 import { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
@@ -39,5 +39,5 @@ This component:
 - Redirects to `/` if non-admin tries to access admin route
 
 ## Verification
-- The file should exist at `src/components/Context/ProtectedRoute.jsx`
+- The file should exist at `frontend/src/context/ProtectedRoute.jsx`
 - No runtime errors when the app loads (the component won't be used yet — that's the next task)

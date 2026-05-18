@@ -4,14 +4,14 @@
 Create an error boundary component to catch React rendering errors and display a fallback UI instead of crashing the entire app.
 
 ## Files to Create
-- `src/components/Context/ErrorBoundary.jsx`
+- `frontend/src/context/ErrorBoundary.jsx`
 
 ## Files to Touch
-- `src/main.jsx`
+- `frontend/src/main.jsx`
 
 ## Steps
 
-1. Create `src/components/Context/ErrorBoundary.jsx`:
+1. Create `frontend/src/context/ErrorBoundary.jsx`:
 
 ```jsx
 import { Component } from "react";
@@ -57,7 +57,7 @@ class ErrorBoundary extends Component {
 export default ErrorBoundary;
 ```
 
-2. Wrap the app in `src/main.jsx`:
+2. Wrap the app in `frontend/src/main.jsx`:
 
 ```jsx
 import { StrictMode } from 'react'

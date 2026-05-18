@@ -4,14 +4,14 @@
 Create a new route file for order-related API endpoints: creating an order and fetching user order history.
 
 ## Files to Create
-- `mediflow-backend/routes/order_routes.js`
+- `backend/routes/order_routes.js`
 
 ## Files to Touch
-- `mediflow-backend/app.js`
+- `backend/app.js`
 
 ## Steps
 
-1. Create `mediflow-backend/routes/order_routes.js`:
+1. Create `backend/routes/order_routes.js`:
 
 ```js
 const express = require('express');
@@ -127,7 +127,7 @@ router.get('/all-orders', verifyToken, async (req, res) => {
 module.exports = router;
 ```
 
-2. Register the routes in `mediflow-backend/app.js`:
+2. Register the routes in `backend/app.js`:
 
 ```js
 const orderRoutes = require('./routes/order_routes');

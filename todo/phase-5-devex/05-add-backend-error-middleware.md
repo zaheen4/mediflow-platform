@@ -4,12 +4,12 @@
 Add a centralized error handling middleware to the Express backend so unhandled errors return proper JSON responses instead of crashing or hanging.
 
 ## Files to Touch
-- `mediflow-backend/app.js`
-- Create `mediflow-backend/middleware/errorMiddleware.js`
+- `backend/app.js`
+- Create `backend/middleware/errorMiddleware.js`
 
 ## Steps
 
-1. Create `mediflow-backend/middleware/errorMiddleware.js`:
+1. Create `backend/middleware/errorMiddleware.js`:
 
 ```js
 function errorMiddleware(err, req, res, next) {
@@ -32,7 +32,7 @@ function notFoundMiddleware(req, res, next) {
 module.exports = { errorMiddleware, notFoundMiddleware };
 ```
 
-2. Register the middleware in `mediflow-backend/app.js`, AFTER all route registrations:
+2. Register the middleware in `backend/app.js`, AFTER all route registrations:
 
 ```js
 const { notFoundMiddleware, errorMiddleware } = require('./middleware/errorMiddleware');

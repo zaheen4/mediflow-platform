@@ -4,11 +4,11 @@
 Show toast notifications when items are added to or removed from the cart.
 
 ## Files to Touch
-- `src/components/Context/CartContext.jsx`
+- `frontend/src/context/CartContext.jsx`
 
 ## Steps
 
-1. Open `src/components/Context/CartContext.jsx`
+1. Open `frontend/src/context/CartContext.jsx`
 
 2. Add toast import:
 ```jsx

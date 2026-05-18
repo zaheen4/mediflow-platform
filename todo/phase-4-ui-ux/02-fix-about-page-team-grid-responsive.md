@@ -4,7 +4,7 @@
 The About page team section uses fixed `400px` image dimensions and a 2-column grid that doesn't adapt to smaller screens.
 
 ## Files to Touch
-- `src/components/About/About.jsx`
+- `frontend/src/pages/About/About.jsx`
 
 ## Current State
 ```jsx
@@ -15,7 +15,7 @@ The About page team section uses fixed `400px` image dimensions and a 2-column g
 
 ## Steps
 
-1. Open `src/components/About/About.jsx`
+1. Open `frontend/src/pages/About/About.jsx`
 
 2. Replace the team section with:
 

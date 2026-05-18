@@ -4,8 +4,8 @@
 Replace the per-query connection creation pattern with a MySQL connection pool. Currently, every `executeQuery` call creates a new connection and closes it, which is inefficient and can exhaust database resources under load.
 
 ## Files to Touch
-- `mediflow-backend/db_connection.js`
-- `mediflow-backend/utils/db_utils.js`
+- `backend/db_connection.js`
+- `backend/utils/db_utils.js`
 
 ## Current State
 
@@ -33,7 +33,7 @@ function executeQuery(query, params) {
 
 ## Steps
 
-1. Replace `mediflow-backend/db_connection.js` with:
+1. Replace `backend/db_connection.js` with:
 ```js
 const mysql = require('mysql');
 
@@ -57,7 +57,7 @@ pool.getConnection((err, connection) => {
 module.exports = pool;
 ```
 
-2. Replace `mediflow-backend/utils/db_utils.js` with:
+2. Replace `backend/utils/db_utils.js` with:
 ```js
 const pool = require('../db_connection');
 
@@ -81,6 +81,6 @@ Key changes:
 - `connectionLimit: 10` means max 10 simultaneous connections
 
 ## Verification
-- Run `node mediflow-backend/app.js` — you should see "Connected to MySQL database"
+- Run `node backend/app.js` — you should see "Connected to MySQL database"
 - Test login, register, and equipment endpoints — all should work as before
 - Under load, connections will be reused instead of created/destroyed each time

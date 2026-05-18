@@ -4,7 +4,7 @@
 The backend `.gitignore` references `myenv/` but the README instructs users to create `mediflowenv/`. Fix this mismatch and ensure all necessary patterns are covered.
 
 ## Files to Touch
-- `mediflow-backend/.gitignore`
+- `backend/.gitignore`
 
 ## Current State
 The file has `myenv/` at the bottom but the README says:
@@ -15,7 +15,7 @@ python -m venv mediflowenv
 
 ## Steps
 
-1. Replace the entire contents of `mediflow-backend/.gitignore` with:
+1. Replace the entire contents of `backend/.gitignore` with:
 ```
 # Node.js
 node_modules/

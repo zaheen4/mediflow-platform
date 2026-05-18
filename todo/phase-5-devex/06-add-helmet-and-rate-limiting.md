@@ -11,7 +11,7 @@ cd mediflow-backend
 npm install helmet express-rate-limit
 ```
 
-2. Open `mediflow-backend/app.js` and add imports:
+2. Open `backend/app.js` and add imports:
 ```js
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');

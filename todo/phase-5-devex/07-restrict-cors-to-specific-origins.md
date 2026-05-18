@@ -4,8 +4,8 @@
 Currently `cors()` allows all origins (`*`). Restrict it to the frontend's URL in production while allowing localhost in development.
 
 ## Files to Touch
-- `mediflow-backend/app.js`
-- `mediflow-backend/.env`
+- `backend/app.js`
+- `backend/.env`
 
 ## Current State
 ```js
@@ -15,13 +15,13 @@ This allows any website to make requests to your backend.
 
 ## Steps
 
-1. Add allowed origins to `mediflow-backend/.env`:
+1. Add allowed origins to `backend/.env`:
 ```
 # CORS Configuration
 ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
 ```
 
-2. Update `mediflow-backend/app.js`:
+2. Update `backend/app.js`:
 
 ```js
 // Before:

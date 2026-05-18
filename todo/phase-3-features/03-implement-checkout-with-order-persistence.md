@@ -4,7 +4,7 @@
 Replace the current `alert()`-based checkout in `Cart.jsx` with a real API call that saves the order to the database.
 
 ## Files to Touch
-- `src/components/Cart/Cart.jsx`
+- `frontend/src/pages/Cart/Cart.jsx`
 
 ## Current State
 ```jsx
@@ -17,7 +17,7 @@ const handleCheckout = () => {
 
 ## Steps
 
-1. Open `src/components/Cart/Cart.jsx`
+1. Open `frontend/src/pages/Cart/Cart.jsx`
 
 2. Add imports:
 ```jsx

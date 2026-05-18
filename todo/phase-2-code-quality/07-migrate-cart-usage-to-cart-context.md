@@ -1,15 +1,15 @@
 # Migrate Cart Usage to CartContext
 
 ## Goal
-Replace the local cart state in `BuyEquipment.jsx` and `Cart.jsx` with the centralized `CartContext`.
+Replace the local cart state in `Shop.jsx` and `Cart.jsx` with the centralized `CartContext`.
 
 ## Files to Touch
-- `src/components/Equipment/BuyEquipment.jsx`
-- `src/components/Cart/Cart.jsx`
+- `frontend/src/pages/Equipment/Shop.jsx`
+- `frontend/src/pages/Cart/Cart.jsx`
 
 ## Steps
 
-### 1. Update BuyEquipment.jsx
+### 1. Update Shop.jsx
 
 Remove local cart state and use context instead:
 
@@ -36,7 +36,7 @@ Cart ({Object.values(cart).reduce((sum, item) => sum + item.quantity, 0)})
 Cart ({getTotalItems()})
 ```
 
-Full updated `BuyEquipment.jsx`:
+Full updated `Shop.jsx`:
 ```jsx
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';

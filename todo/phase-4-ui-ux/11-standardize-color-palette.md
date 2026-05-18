@@ -4,15 +4,15 @@
 The codebase has hardcoded colors scattered throughout (`#ffcece`, `#ff7537`, `#fbce4b`, `#fc432d`, `#e5004b`). Define these as CSS custom variables or Tailwind theme colors for consistency.
 
 ## Files to Touch
-- `src/index.css`
-- `src/components/Equipment/BuyEquipment.jsx`
-- `src/components/Home/Navbar.jsx`
-- `src/components/Register/Register.jsx`
-- `src/components/Login/Login.jsx`
+- `frontend/src/index.css`
+- `frontend/src/pages/Equipment/Shop.jsx`
+- `frontend/src/components/Layout/Navbar.jsx`
+- `frontend/src/pages/Register/Register.jsx`
+- `frontend/src/pages/Login/Login.jsx`
 
 ## Steps
 
-1. Open `src/index.css` and add custom color variables to the `@theme` block:
+1. Open `frontend/src/index.css` and add custom color variables to the `@theme` block:
 
 ```css
 @theme {
@@ -25,7 +25,7 @@ The codebase has hardcoded colors scattered throughout (`#ffcece`, `#ff7537`, `#
 }
 ```
 
-2. Update `BuyEquipment.jsx`:
+2. Update `Shop.jsx`:
 ```jsx
 // Before:
 <div className="card-body w-full bg-[#ffcece] rounded-md">

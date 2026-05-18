@@ -4,11 +4,11 @@
 Add a show/hide password toggle button to the registration form.
 
 ## Files to Touch
-- `src/components/Register/Register.jsx`
+- `frontend/src/pages/Register/Register.jsx`
 
 ## Steps
 
-1. Open `src/components/Register/Register.jsx`
+1. Open `frontend/src/pages/Register/Register.jsx`
 
 2. Add state for password visibility:
 ```jsx

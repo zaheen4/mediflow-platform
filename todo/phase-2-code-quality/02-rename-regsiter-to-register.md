@@ -4,17 +4,17 @@
 Fix the typo in the filename `Regsiter.jsx` → `Register.jsx` and update the import in `Route.jsx`.
 
 ## Files to Touch
-- `src/components/Register/Regsiter.jsx` (rename)
-- `src/routes/Route.jsx` (update import)
+- `frontend/src/pages/Register/Regsiter.jsx` (rename)
+- `frontend/frontend/src/routes/router.jsx` (update import)
 
 ## Steps
 
 1. Rename the file:
 ```sh
-mv src/components/Register/Regsiter.jsx src/components/Register/Register.jsx
+mv frontend/src/pages/Register/Regsiter.jsx frontend/src/pages/Register/Register.jsx
 ```
 
-2. Open `src/routes/Route.jsx` and change the import:
+2. Open `frontend/frontend/src/routes/router.jsx` and change the import:
 ```jsx
 // Before:
 import Register from "../components/Register/Regsiter";

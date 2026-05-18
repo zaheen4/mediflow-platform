@@ -4,11 +4,11 @@
 When the cart is empty, show a friendly message with a link to the shop instead of a blank page.
 
 ## Files to Touch
-- `src/components/Cart/Cart.jsx`
+- `frontend/src/pages/Cart/Cart.jsx`
 
 ## Steps
 
-1. Open `src/components/Cart/Cart.jsx`
+1. Open `frontend/src/pages/Cart/Cart.jsx`
 
 2. Add `Link` import:
 ```jsx

@@ -4,11 +4,11 @@
 Show a success toast when a user logs in successfully, matching the pattern used in registration.
 
 ## Files to Touch
-- `src/components/Login/Login.jsx`
+- `frontend/src/pages/Login/Login.jsx`
 
 ## Steps
 
-1. Open `src/components/Login/Login.jsx`
+1. Open `frontend/src/pages/Login/Login.jsx`
 
 2. Add toast imports if not already present:
 ```jsx

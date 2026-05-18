@@ -4,11 +4,11 @@
 Add a show/hide password toggle button to the login form so users can see what they're typing.
 
 ## Files to Touch
-- `src/components/Login/Login.jsx`
+- `frontend/src/pages/Login/Login.jsx`
 
 ## Steps
 
-1. Open `src/components/Login/Login.jsx`
+1. Open `frontend/src/pages/Login/Login.jsx`
 
 2. Add state for password visibility:
 ```jsx

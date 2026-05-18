@@ -4,11 +4,11 @@
 Remove `import React from "react"` from files that don't actually use the `React` variable directly. In modern React (17+) with JSX transform, this import is no longer needed unless you use `React.something` (like `React.useState`, `React.useEffect`, etc.).
 
 ## Files to Touch
-- `src/components/About/About.jsx`
-- `src/components/About/Services.jsx`
-- `src/components/Equipment/BuyEquipment.jsx`
-- `src/components/Equipment/AdminPage.jsx`
-- `src/components/Cart/Cart.jsx`
+- `frontend/src/pages/About/About.jsx`
+- `frontend/src/pages/About/Services.jsx`
+- `frontend/src/pages/Equipment/Shop.jsx`
+- `frontend/src/pages/Equipment/AdminDashboard.jsx`
+- `frontend/src/pages/Cart/Cart.jsx`
 
 ## Steps
 
@@ -18,7 +18,7 @@ For each file below, remove the line `import React from "react"` or `import Reac
 
 2. **Services.jsx** — Remove `import React from "react";` entirely (no hooks used)
 
-3. **BuyEquipment.jsx** — Change:
+3. **Shop.jsx** — Change:
 ```jsx
 // Before:
 import React, { useState, useEffect } from 'react';
@@ -27,7 +27,7 @@ import React, { useState, useEffect } from 'react';
 import { useState, useEffect } from 'react';
 ```
 
-4. **AdminPage.jsx** — Change:
+4. **AdminDashboard.jsx** — Change:
 ```jsx
 // Before:
 import React, { useState, useEffect } from "react";

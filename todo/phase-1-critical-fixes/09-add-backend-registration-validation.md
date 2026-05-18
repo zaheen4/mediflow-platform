@@ -4,7 +4,7 @@
 Add input validation to the `/register` endpoint to prevent invalid data from reaching the database.
 
 ## Files to Touch
-- `mediflow-backend/routes/auth_routes.js`
+- `backend/routes/auth_routes.js`
 
 ## Current State
 The register route accepts any body and directly hashes + inserts:
@@ -22,7 +22,7 @@ No validation on:
 
 ## Steps
 
-1. Open `mediflow-backend/routes/auth_routes.js`
+1. Open `backend/routes/auth_routes.js`
 
 2. Add validation logic before the database query. Replace the `/register` handler with:
 ```js

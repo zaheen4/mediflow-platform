@@ -4,7 +4,7 @@
 The Lato font is configured in `vite.config.js` but commented out in `index.css`. Either enable it properly or remove the unused config.
 
 ## Files to Touch
-- `src/index.css`
+- `frontend/src/index.css`
 - `vite.config.js`
 
 ## Current State
@@ -27,7 +27,7 @@ theme: {
 
 ## Steps
 
-1. Open `src/index.css` and uncomment the font import:
+1. Open `frontend/src/index.css` and uncomment the font import:
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 @import "tailwindcss";

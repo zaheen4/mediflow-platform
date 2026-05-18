@@ -4,7 +4,7 @@
 Add input validation to the equipment routes (`add-equipment`, `modify-equipment`) to prevent invalid data from reaching the database.
 
 ## Files to Touch
-- `mediflow-backend/routes/equipment_routes.js`
+- `backend/routes/equipment_routes.js`
 
 ## Current State
 Both POST and PUT handlers accept any body and directly insert/update:
@@ -20,7 +20,7 @@ No validation on:
 
 ## Steps
 
-1. Open `mediflow-backend/routes/equipment_routes.js`
+1. Open `backend/routes/equipment_routes.js`
 
 2. Add a validation helper at the top of the file (after imports):
 ```js

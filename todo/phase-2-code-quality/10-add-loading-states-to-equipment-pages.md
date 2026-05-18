@@ -1,15 +1,15 @@
 # Add Loading States to Equipment Pages
 
 ## Goal
-Add loading spinners to `BuyEquipment.jsx` and `AdminPage.jsx` while equipment data is being fetched from the backend.
+Add loading spinners to `Shop.jsx` and `AdminDashboard.jsx` while equipment data is being fetched from the backend.
 
 ## Files to Touch
-- `src/components/Equipment/BuyEquipment.jsx`
-- `src/components/Equipment/AdminPage.jsx`
+- `frontend/src/pages/Equipment/Shop.jsx`
+- `frontend/src/pages/Equipment/AdminDashboard.jsx`
 
 ## Steps
 
-### 1. Update BuyEquipment.jsx
+### 1. Update Shop.jsx
 
 Add a loading state:
 
@@ -43,7 +43,7 @@ if (loading) {
 
 Place this check right after the `useEffect` and before the `return` statement that renders the equipment grid.
 
-### 2. Update AdminPage.jsx
+### 2. Update AdminDashboard.jsx
 
 Add a loading state:
 

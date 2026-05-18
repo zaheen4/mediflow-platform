@@ -4,13 +4,13 @@
 `DummyPage` is a placeholder with no real functionality. Either remove it entirely from the codebase or repurpose it. This task covers removal.
 
 ## Files to Touch
-- `src/routes/Route.jsx`
+- `frontend/frontend/src/routes/router.jsx`
 - `src/components/Dummy/DummyPage.jsx` (delete)
 - `src/components/Dummy/` (delete directory)
 
 ## Steps
 
-1. Open `src/routes/Route.jsx` and remove the dummy-page route entry:
+1. Open `frontend/frontend/src/routes/router.jsx` and remove the dummy-page route entry:
 ```jsx
 // Remove these lines:
 {

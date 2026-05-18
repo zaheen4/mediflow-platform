@@ -4,12 +4,12 @@
 Replace `console.error` calls with user-facing toast notifications so users know when something goes wrong instead of silently failing.
 
 ## Files to Touch
-- `src/components/Equipment/BuyEquipment.jsx`
-- `src/components/Equipment/AdminPage.jsx`
+- `frontend/src/pages/Equipment/Shop.jsx`
+- `frontend/src/pages/Equipment/AdminDashboard.jsx`
 
 ## Steps
 
-### 1. Update BuyEquipment.jsx
+### 1. Update Shop.jsx
 
 Add toast import and notification on fetch error:
 
@@ -32,7 +32,7 @@ import { ToastContainer } from "react-toastify";
 <ToastContainer position="top-center" autoClose={3000} theme="light" />
 ```
 
-### 2. Update AdminPage.jsx
+### 2. Update AdminDashboard.jsx
 
 Add toast import and notifications for each operation:
 

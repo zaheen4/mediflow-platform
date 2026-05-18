@@ -1,14 +1,14 @@
 # Create CartContext
 
 ## Goal
-Create a React Context to manage cart state globally, replacing the duplicated localStorage-based cart logic in `BuyEquipment.jsx` and `Cart.jsx`.
+Create a React Context to manage cart state globally, replacing the duplicated localStorage-based cart logic in `Shop.jsx` and `Cart.jsx`.
 
 ## Files to Create
-- `src/components/Context/CartContext.jsx`
+- `frontend/src/context/CartContext.jsx`
 
 ## Steps
 
-1. Create `src/components/Context/CartContext.jsx`:
+1. Create `frontend/src/context/CartContext.jsx`:
 
 ```jsx
 import { createContext, useState, useEffect, useContext } from "react";
@@ -99,7 +99,7 @@ export const CartProvider = ({ children }) => {
 export default CartProvider;
 ```
 
-2. Wrap the app with `CartProvider` in `src/main.jsx`:
+2. Wrap the app with `CartProvider` in `frontend/src/main.jsx`:
 ```jsx
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'

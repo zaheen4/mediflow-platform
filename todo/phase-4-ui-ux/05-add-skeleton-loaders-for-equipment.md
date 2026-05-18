@@ -4,11 +4,11 @@
 Replace the simple spinner with skeleton card placeholders that mimic the actual equipment card layout, providing a better perceived loading experience.
 
 ## Files to Touch
-- `src/components/Equipment/BuyEquipment.jsx`
+- `frontend/src/pages/Equipment/Shop.jsx`
 
 ## Steps
 
-1. Open `src/components/Equipment/BuyEquipment.jsx`
+1. Open `frontend/src/pages/Equipment/Shop.jsx`
 
 2. Replace the loading spinner with skeleton cards:
 

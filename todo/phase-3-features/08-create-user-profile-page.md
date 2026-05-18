@@ -7,14 +7,14 @@ Create a page where logged-in users can view their profile information and chang
 - `src/components/Profile/Profile.jsx`
 
 ## Files to Touch
-- `src/routes/Route.jsx`
-- `mediflow-backend/routes/auth_routes.js` (add change-password endpoint)
+- `frontend/frontend/src/routes/router.jsx`
+- `backend/routes/auth_routes.js` (add change-password endpoint)
 
 ## Steps
 
 ### 1. Add Backend Endpoint
 
-Open `mediflow-backend/routes/auth_routes.js` and add:
+Open `backend/routes/auth_routes.js` and add:
 
 ```js
 // Change Password Route
@@ -178,7 +178,7 @@ export default Profile;
 
 ### 3. Add Route
 
-In `src/routes/Route.jsx`:
+In `frontend/frontend/src/routes/router.jsx`:
 
 ```jsx
 import Profile from "../components/Profile/Profile";

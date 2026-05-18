@@ -4,11 +4,11 @@
 Add success toast notifications for admin equipment operations (add, edit, delete).
 
 ## Files to Touch
-- `src/components/Equipment/AdminPage.jsx`
+- `frontend/src/pages/Equipment/AdminDashboard.jsx`
 
 ## Steps
 
-1. Open `src/components/Equipment/AdminPage.jsx`
+1. Open `frontend/src/pages/Equipment/AdminDashboard.jsx`
 
 2. Ensure toast imports are present (from a previous task):
 ```jsx

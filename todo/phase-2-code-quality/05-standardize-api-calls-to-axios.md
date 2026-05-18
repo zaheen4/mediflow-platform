@@ -4,7 +4,7 @@
 The codebase uses both `fetch` (in Login.jsx) and `axios` (everywhere else) for HTTP requests. Standardize everything to `axios` for consistency.
 
 ## Files to Touch
-- `src/components/Login/Login.jsx`
+- `frontend/src/pages/Login/Login.jsx`
 
 ## Current State
 Login.jsx uses `fetch`:
@@ -22,7 +22,7 @@ Every other component uses `axios`.
 
 ## Steps
 
-1. Open `src/components/Login/Login.jsx`
+1. Open `frontend/src/pages/Login/Login.jsx`
 
 2. Add the axios import at the top:
 ```jsx

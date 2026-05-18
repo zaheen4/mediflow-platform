@@ -4,12 +4,12 @@
 Create `.env.example` files for both frontend and backend so new developers know what environment variables are needed without exposing real values.
 
 ## Files to Create
-- `mediflow-backend/.env.example`
+- `backend/.env.example`
 - `.env.example` (frontend root)
 
 ## Steps
 
-1. Create `mediflow-backend/.env.example`:
+1. Create `backend/.env.example`:
 ```
 # Server Configuration
 PORT=5000

@@ -4,12 +4,12 @@
 When the equipment list is empty (no items in database or fetch returns empty array), show a friendly message instead of a blank grid.
 
 ## Files to Touch
-- `src/components/Equipment/BuyEquipment.jsx`
-- `src/components/Equipment/AdminPage.jsx`
+- `frontend/src/pages/Equipment/Shop.jsx`
+- `frontend/src/pages/Equipment/AdminDashboard.jsx`
 
 ## Steps
 
-### 1. Update BuyEquipment.jsx
+### 1. Update Shop.jsx
 
 After the loading check and before the equipment grid:
 
@@ -35,7 +35,7 @@ if (equipment.length === 0) {
 }
 ```
 
-### 2. Update AdminPage.jsx
+### 2. Update AdminDashboard.jsx
 
 After the loading check and before the table:
 

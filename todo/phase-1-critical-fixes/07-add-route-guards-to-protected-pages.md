@@ -4,14 +4,14 @@
 Wrap user-only routes (`/buy-equipment`, `/cart`) with the `ProtectedRoute` component so unauthenticated users can't access them.
 
 ## Files to Touch
-- `src/routes/Route.jsx`
+- `frontend/frontend/src/routes/router.jsx`
 
 ## Current State
 Routes are open — anyone can navigate to `/buy-equipment` or `/cart` without logging in.
 
 ## Steps
 
-1. Open `src/routes/Route.jsx`
+1. Open `frontend/frontend/src/routes/router.jsx`
 
 2. Add the import at the top:
 ```jsx

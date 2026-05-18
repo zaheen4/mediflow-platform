@@ -4,7 +4,7 @@
 The Services page has 4 service cards, all linking to `/pages/dummypage.html` which doesn't exist. Fix these links to either point to valid routes or remove them.
 
 ## Files to Touch
-- `src/components/About/Services.jsx`
+- `frontend/src/pages/About/Services.jsx`
 
 ## Current State
 ```js
@@ -18,7 +18,7 @@ const services = [
 
 ## Steps
 
-1. Open `src/components/About/Services.jsx`
+1. Open `frontend/src/pages/About/Services.jsx`
 
 2. Update the `services` array. Replace the `link` property with `action` — some will point to real routes, others will be non-functional placeholders:
 

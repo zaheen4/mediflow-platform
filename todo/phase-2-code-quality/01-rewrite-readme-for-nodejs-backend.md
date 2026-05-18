@@ -65,14 +65,14 @@ cd ..
 
 ### 1. Import the SQL File
 ```sh
-mysql -u root -p < mediflow-backend/mediflowdb.sql
+mysql -u root -p < backend/mediflowdb.sql
 ```
 Enter your MySQL root password when prompted.
 
 ### 2. Configure Environment Variables
 
 #### Backend
-Create a `.env` file in `mediflow-backend/`:
+Create a `.env` file in `backend/`:
 ```
 PORT=5000
 DB_HOST=localhost
@@ -85,7 +85,7 @@ JWT_EXPIRATION=1h
 
 Or copy the template:
 ```sh
-cp mediflow-backend/.env.example mediflow-backend/.env
+cp backend/.env.example backend/.env
 ```
 
 #### Frontend

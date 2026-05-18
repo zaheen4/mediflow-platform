@@ -4,7 +4,7 @@
 The WelcomePage uses fixed heights (`h-[720px]`) and large margins (`mt-40`, `mb-40`) that break on mobile screens. Make it responsive.
 
 ## Files to Touch
-- `src/components/Home/WelcomePage.jsx`
+- `frontend/src/components/Layout/WelcomePage.jsx`
 
 ## Current State
 ```jsx
@@ -15,7 +15,7 @@ The WelcomePage uses fixed heights (`h-[720px]`) and large margins (`mt-40`, `mb
 
 ## Steps
 
-1. Open `src/components/Home/WelcomePage.jsx`
+1. Open `frontend/src/components/Layout/WelcomePage.jsx`
 
 2. Replace the entire component with:
 

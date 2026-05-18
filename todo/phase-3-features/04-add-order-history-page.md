@@ -7,8 +7,8 @@ Create a page where users can view their past orders, and Admins can view all or
 - `src/components/Orders/OrderHistory.jsx`
 
 ## Files to Touch
-- `src/routes/Route.jsx`
-- `src/components/Home/Navbar.jsx` (optional: add link)
+- `frontend/frontend/src/routes/router.jsx`
+- `frontend/src/components/Layout/Navbar.jsx` (optional: add link)
 
 ## Steps
 
@@ -124,7 +124,7 @@ const OrderHistory = () => {
 export default OrderHistory;
 ```
 
-2. Add the route in `src/routes/Route.jsx`:
+2. Add the route in `frontend/frontend/src/routes/router.jsx`:
 
 ```jsx
 import OrderHistory from "../components/Orders/OrderHistory";

@@ -4,11 +4,11 @@
 Add a visible cart item count badge to the Navbar so users can see how many items are in their cart from any page.
 
 ## Files to Touch
-- `src/components/Home/Navbar.jsx`
+- `frontend/src/components/Layout/Navbar.jsx`
 
 ## Steps
 
-1. Open `src/components/Home/Navbar.jsx`
+1. Open `frontend/src/components/Layout/Navbar.jsx`
 
 2. Add imports at the top:
 ```jsx

@@ -4,11 +4,11 @@
 Add an `orders` table and an `order_items` table to the database to persist checkout data.
 
 ## Files to Touch
-- `mediflow-backend/mediflowdb.sql`
+- `backend/mediflowdb.sql`
 
 ## Steps
 
-1. Open `mediflow-backend/mediflowdb.sql`
+1. Open `backend/mediflowdb.sql`
 
 2. Add the following table definitions after the `users` table section (before the final `SET` statements):
 
@@ -47,7 +47,7 @@ CREATE TABLE `order_items` (
 
 3. Import the updated SQL file into MySQL:
 ```sh
-mysql -u root -p < mediflow-backend/mediflowdb.sql
+mysql -u root -p < backend/mediflowdb.sql
 ```
 (Note: This will drop and recreate existing tables. If you have data you want to keep, use `ALTER TABLE` or manually add the new tables instead.)
 
