@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth_routes');
 const equipmentRoutes = require('./routes/equipment_routes');
+const orderRoutes = require('./routes/order_routes');
 
 // Initialize Express app
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.json());
 // Register Blueprints (Modularized Routes)
 app.use(authRoutes);
 app.use(equipmentRoutes);
+app.use(orderRoutes);
 
 // Run the Express app
 const PORT = process.env.PORT || 5000;
