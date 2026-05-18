@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash } from "react-icons/fa";
-import { CartContext } from "../Context/CartContext";
+import { CartContext } from "../../context/CartContext";
 
 const Cart = () => {
     const navigate = useNavigate();

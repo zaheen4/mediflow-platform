@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../Context/AuthContext";
-import { CartContext } from "../Context/CartContext";
+import { AuthContext } from "../../context/AuthContext";
+import { CartContext } from "../../context/CartContext";
 import { FaCartShopping } from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
 import user_icon from "../../assets/user_icon.svg"

@@ -3,10 +3,10 @@ import axios from 'axios';
 import bdt_icon2 from "../../assets/bdt_icon2.svg";
 import { FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import { CartContext } from "../Context/CartContext";
+import { CartContext } from "../../context/CartContext";
 import { toast, ToastContainer } from "react-toastify";
 
-const BuyEquipment = () => {
+const Shop = () => {
     const [equipment, setEquipment] = useState([]);
     const [loading, setLoading] = useState(true);
     const { cart, addToCart, getTotalItems } = useContext(CartContext);
@@ -85,4 +85,4 @@ const BuyEquipment = () => {
     );
 };
 
-export default BuyEquipment;
+export default Shop;
