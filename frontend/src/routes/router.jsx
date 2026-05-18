@@ -9,6 +9,8 @@ import AdminDashboard from "../pages/Equipment/AdminDashboard";
 import About from "../pages/About/About";
 import Services from "../pages/About/Services";
 import Cart from "../pages/Cart/Cart";
+import OrderHistory from "../pages/Orders/OrderHistory";
+import Profile from "../pages/Profile/Profile";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 export const router = createBrowserRouter([
@@ -41,6 +43,22 @@ export const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <Cart />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "/orders",
+                element: (
+                    <ProtectedRoute>
+                        <OrderHistory />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "/profile",
+                element: (
+                    <ProtectedRoute>
+                        <Profile />
                     </ProtectedRoute>
                 ),
             },

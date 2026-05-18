@@ -127,21 +127,27 @@ const Navbar = () => {
                      className="menu menu-sm dropdown-content mt-3 w-44 bg-gray-200 p-2 shadow rounded-box"
                   >
 
-                     <li>
-                        <div className="flex items-center gap-2">
-                           <img
-                              src={user_icon}
-                              alt="User Icon"
-                              className="w-8 h-8 rounded-full"
-                           />
-                           <span className="text-[14px]">{user.role}</span>
-                        </div>
-                     </li>
-                     <li>
-                        <button onClick={handleLogout} className="btn btn-outline btn-error w-full mt-2 text-[14px]">
-                           Logout
-                        </button>
-                     </li>
+                      <li>
+                         <div className="flex items-center gap-2">
+                            <img
+                               src={user_icon}
+                               alt="User Icon"
+                               className="w-8 h-8 rounded-full"
+                            />
+                            <span className="text-[14px]">{user.role}</span>
+                         </div>
+                      </li>
+                      <li>
+                         <Link to="/orders">Order History</Link>
+                      </li>
+                      <li>
+                         <Link to="/profile">Profile</Link>
+                      </li>
+                      <li>
+                         <button onClick={handleLogout} className="btn btn-outline btn-error w-full mt-2 text-[14px]">
+                            Logout
+                         </button>
+                      </li>
 
                   </ul>
                </div>

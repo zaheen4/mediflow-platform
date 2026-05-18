@@ -2,14 +2,47 @@ import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash } from "react-icons/fa";
 import { CartContext } from "../../context/CartContext";
+import { AuthContext } from "../../context/AuthContext";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 const Cart = () => {
     const navigate = useNavigate();
     const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useContext(CartContext);
+    const { user } = useContext(AuthContext);
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-    const handleCheckout = () => {
-        clearCart();
-        alert("Checkout successful! Your cart has been cleared.");
+    const handleCheckout = async () => {
+        if (cart.length === 0) {
+            toast.warn("Your cart is empty!");
+            return;
+        }
+
+        try {
+            const orderData = {
+                items: cart.map(item => ({
+                    equipment_id: item.equipment_id,
+                    quantity: item.quantity,
+                    price: item.price,
+                })),
+                totalAmount: getTotalPrice(),
+            };
+
+            const response = await axios.post(
+                `${API_BASE_URL}/create-order`,
+                orderData,
+                {
+                    headers: { Authorization: `Bearer ${user.token}` },
+                }
+            );
+
+            clearCart();
+            toast.success(`Order placed successfully! Order ID: ${response.data.orderId}`);
+            navigate("/");
+        } catch (error) {
+            console.error("Checkout error:", error);
+            toast.error("Failed to place order. Please try again.");
+        }
     };
 
     return (
@@ -50,6 +83,8 @@ const Cart = () => {
                     Checkout: {getTotalPrice().toFixed(2)} BDT
                 </button>
             )}
+
+            <ToastContainer position="top-center" autoClose={3000} theme="light" />
         </div>
     );
 };
