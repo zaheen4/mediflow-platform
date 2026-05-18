@@ -1,26 +1,25 @@
-// src/components/Register.jsx
 import login_image2 from "../../assets/luke-chesser-CxBx_J3yp9g-unsplash.jpg"
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 
 const Register = () => {
    const [formData, setFormData] = useState({
       username: "",
       password: "",
-      role: "User",  // Default role
+      role: "User",
       email: "",
    });
 
+   const [showPassword, setShowPassword] = useState(false);
    const [errorMessage, setErrorMessage] = useState("");
    const [successMessage, setSuccessMessage] = useState("");
    const navigate = useNavigate();
 
 
-   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;  // centralized backend link
-   // console.log(API_BASE_URL);
+   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
    const handleChange = (e) => {
@@ -33,8 +32,8 @@ const Register = () => {
    const handleSubmit = async (e) => {
 
       e.preventDefault();
-      setErrorMessage(""); // Clear previous errors
-      setSuccessMessage(""); // Clear previous success message
+      setErrorMessage("");
+      setSuccessMessage("");
 
       try {
          const response = await axios.post(`${API_BASE_URL}/register`, formData, {
@@ -51,8 +50,6 @@ const Register = () => {
             email: "",
          });
 
-         // toast.success("Registration Successful!");
-
          toast.success('Registration Successful!', {
             position: "top-center",
             autoClose: 5000,
@@ -62,7 +59,6 @@ const Register = () => {
             draggable: true,
             progress: undefined,
             theme: "light",
-            // transition: Bounce,
          });
 
 
@@ -121,15 +117,24 @@ const Register = () => {
                </div>
                <div className="mb-4">
                   <label htmlFor="password" className="block text-sm font-semibold text-white">Password</label>
-                  <input
-                     type="password"
-                     id="password"
-                     name="password"
-                     value={formData.password}
-                     onChange={handleChange}
-                     required
-                     className="w-full mt-2 p-2 border-none rounded-md text-black bg-white"
-                  />
+                  <div className="relative">
+                     <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        className="w-full mt-2 p-2 pr-10 border-none rounded-md text-black bg-white"
+                     />
+                     <button
+                        type="button"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 mt-2"
+                        onClick={() => setShowPassword(!showPassword)}
+                     >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                     </button>
+                  </div>
                </div>
                <div className="mb-4">
                   <label htmlFor="role" className="block text-sm font-semibold text-white">Role</label>
@@ -166,7 +171,6 @@ const Register = () => {
             draggable
             pauseOnHover
             theme="light"
-            // transition={Bounce}
          />
       </div>
    );

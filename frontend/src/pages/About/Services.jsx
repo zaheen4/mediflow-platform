@@ -1,8 +1,8 @@
+import { Link } from "react-router-dom";
 import consult from "../../assets/servicesicons/consult.svg"
 import rent from "../../assets/servicesicons/rent.svg"
 import shop from "../../assets/servicesicons/shopping_bag.svg"
 import repair from "../../assets/servicesicons/repair.svg"
-
 
 
 const Services = () => {
@@ -22,7 +22,13 @@ const Services = () => {
                 <img src={service.image} alt={service.title} className="mx-auto mb-4 size-16" />
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">{service.title}</h2>
                 <p className="text-gray-800 mb-4">{service.description}</p>
-                <a href={service.link} className="text-red-500 hover:text-red-600 font-semibold">Learn More →</a>
+                {service.link ? (
+                  <Link to={service.link} className="text-red-500 hover:text-red-600 font-semibold">
+                    Learn More →
+                  </Link>
+                ) : (
+                  <span className="text-gray-400 font-semibold cursor-not-allowed">Coming Soon</span>
+                )}
               </div>
             </div>
           ))}
@@ -52,25 +58,25 @@ const services = [
     title: "Equipment Sales",
     description: "Browse our extensive catalog of high-quality medical equipment. From diagnostic tools to surgical instruments, we have it all.",
     image: shop,
-    link: "/pages/dummypage.html",
+    link: "/buy-equipment",
   },
   {
     title: "Equipment Rental",
     description: "Need equipment for a short period? Rent from our wide selection of medical devices at affordable rates.",
     image: rent,
-    link: "/pages/dummypage.html",
+    link: null,
   },
   {
     title: "Maintenance & Repair",
     description: "Keep your equipment in top condition with our expert maintenance and repair services.",
     image: repair,
-    link: "/pages/dummypage.html",
+    link: null,
   },
   {
     title: "Consulting",
     description: "Get expert advice on selecting, installing, and managing medical equipment for your facility.",
     image: consult,
-    link: "/pages/dummypage.html",
+    link: null,
   },
 ];
 
