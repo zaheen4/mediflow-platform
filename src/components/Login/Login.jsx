@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useContext } from "react";
-import { AuthContext } from "../Context/AuthContext.jsx"; 
+import { AuthContext } from "../Context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import login_image2 from "../../assets/luke-chesser-CxBx_J3yp9g-unsplash.jpg"
 
 const Login = () => {
@@ -14,36 +15,32 @@ const Login = () => {
    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
    // console.log(API_BASE_URL);
 
-   const handleLogin = async (e) => {
-      e.preventDefault();
-      try {
-         const response = await fetch(`${API_BASE_URL}/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
-         });
+    const handleLogin = async (e) => {
+       e.preventDefault();
+       try {
+          const response = await axios.post(`${API_BASE_URL}/login`, {
+             username,
+             password,
+          });
 
-         const data = await response.json();
+          const data = response.data;
+          login(data);
 
-         if (response.ok) {
-            login(data); // Store user info in AuthContext
-
-            // Redirect based on user role
-            if (data.role === "Admin") {
-               navigate("/");
-            } else if (data.role === "User") {
-               navigate("/");
-            } else {
-               navigate("/"); // Default redirection
-            }
-         } else {
-            setError(data.error || "Login failed");
-         }
-
-      } catch {
-         setError("Network error");
-      }
-   };
+          if (data.role === "Admin") {
+             navigate("/");
+          } else if (data.role === "User") {
+             navigate("/");
+          } else {
+             navigate("/");
+          }
+       } catch (error) {
+          if (error.response) {
+             setError(error.response.data.error || "Login failed");
+          } else {
+             setError("Network error");
+          }
+       }
+    };
 
 
 
