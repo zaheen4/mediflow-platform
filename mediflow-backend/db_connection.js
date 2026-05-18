@@ -1,21 +1,20 @@
 const mysql = require('mysql');
 
-function getDbConnection() {
-    const connection = mysql.createConnection({
-        host: "localhost",
-        user: "root", // Replace with your MySQL username
-        password: "root", // Replace with your MySQL password
-        database: "mediflowdb"
-    });
+const pool = mysql.createPool({
+    connectionLimit: 10,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+});
 
-    connection.connect(err => {
-        if (err) {
-            console.error('Error connecting to database:', err.stack);
-            return;
-        }
-    });
+pool.getConnection((err, connection) => {
+    if (err) {
+        console.error('Error connecting to database:', err.stack);
+        return;
+    }
+    console.log('Connected to MySQL database');
+    connection.release();
+});
 
-    return connection;
-}
-
-module.exports = getDbConnection;
+module.exports = pool;
