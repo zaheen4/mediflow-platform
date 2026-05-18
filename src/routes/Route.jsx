@@ -10,6 +10,7 @@ import AdminPage from "../components/Equipment/AdminPage";
 import About from "../components/About/About";
 import Services from "../components/About/Services";
 import Cart from "../components/Cart/Cart";
+import ProtectedRoute from "../components/Context/ProtectedRoute";
 
 export const router = createBrowserRouter([
    {
@@ -34,20 +35,32 @@ export const router = createBrowserRouter([
             path: "/dummy-page",
             element: <DummyPage />,
          },
-         {
-            path: "/buy-equipment",
-            element: <BuyEquipment />,
-         },
+          {
+             path: "/buy-equipment",
+             element: (
+                <ProtectedRoute>
+                   <BuyEquipment />
+                </ProtectedRoute>
+             ),
+          },
 
-         {
-            path: "/cart",
-            element: <Cart />,
-         },
+          {
+             path: "/cart",
+             element: (
+                <ProtectedRoute>
+                   <Cart />
+                </ProtectedRoute>
+             ),
+          },
 
-         {
-            path: "/admin-dashboard",
-            element: <AdminPage />,
-         },
+          {
+             path: "/admin-dashboard",
+             element: (
+                <ProtectedRoute adminOnly>
+                   <AdminPage />
+                </ProtectedRoute>
+             ),
+          },
 
          {
             path: "/about",
