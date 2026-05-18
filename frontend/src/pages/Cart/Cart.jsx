@@ -4,7 +4,7 @@ import { FaTrash } from "react-icons/fa";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const Cart = () => {
 
     const handleCheckout = async () => {
         if (cart.length === 0) {
-            toast.warn("Your cart is empty!");
+            toast.warning("Your cart is empty!");
             return;
         }
 
@@ -110,8 +110,6 @@ const Cart = () => {
                     )}
                 </>
             )}
-
-            <ToastContainer position="top-center" autoClose={3000} theme="light" />
         </div>
     );
 };

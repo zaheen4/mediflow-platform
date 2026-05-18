@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 
 const AdminPage = () => {
     const [equipment, setEquipment] = useState([]);
@@ -265,7 +265,6 @@ const AdminPage = () => {
                 </table>
             </div>
 
-            <ToastContainer position="top-center" autoClose={3000} theme="light" />
         </div>
     );
 };

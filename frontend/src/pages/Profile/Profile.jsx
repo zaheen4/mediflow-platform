@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Profile = () => {
@@ -121,8 +121,6 @@ const Profile = () => {
                     </button>
                 </form>
             </div>
-
-            <ToastContainer position="top-center" autoClose={3000} theme="light" />
         </div>
     );
 };

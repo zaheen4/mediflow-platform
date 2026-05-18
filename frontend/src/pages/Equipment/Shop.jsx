@@ -4,7 +4,7 @@ import bdt_icon2 from "../../assets/bdt_icon2.svg";
 import { FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 
 const Shop = () => {
     const [equipment, setEquipment] = useState([]);
@@ -112,8 +112,6 @@ const Shop = () => {
                 <FaShoppingCart />
                 Cart ({getTotalItems()})
             </button>
-
-            <ToastContainer position="top-center" autoClose={3000} theme="light" />
         </div>
     );
 };

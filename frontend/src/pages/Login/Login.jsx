@@ -4,7 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 import login_image2 from "../../assets/luke-chesser-CxBx_J3yp9g-unsplash.jpg";
 
 const Login = () => {
@@ -28,15 +28,7 @@ const Login = () => {
             const data = response.data;
             login(data);
 
-            toast.success(`Welcome back, ${data.username}!`, {
-                position: "top-center",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: false,
-                draggable: false,
-                theme: "light",
-            });
+            toast.success(`Welcome back, ${data.username}!`);
 
             navigate("/");
         } catch (error) {
@@ -110,16 +102,6 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-
-            <ToastContainer
-                position="top-center"
-                autoClose={3000}
-                hideProgressBar={false}
-                closeOnClick={false}
-                pauseOnHover={false}
-                draggable={false}
-                theme="light"
-            />
         </div>
     );
 };

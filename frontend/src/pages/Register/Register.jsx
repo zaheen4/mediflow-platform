@@ -3,7 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -47,16 +47,7 @@ const Register = () => {
                 email: "",
             });
 
-            toast.success("Registration Successful!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.success("Registration Successful!");
 
             setTimeout(() => {
                 navigate("/login");
@@ -157,18 +148,6 @@ const Register = () => {
                     </div>
                 </form>
             </div>
-            <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { AuthContext } from "./AuthContext";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 export const CartContext = createContext();
 
@@ -23,41 +23,25 @@ export const CartProvider = ({ children }) => {
     }, [user]);
 
     const addToCart = (equip) => {
-        setCart((prevCart) => {
-            const itemIndex = prevCart.findIndex((item) => item.equipment_id === equip.equipment_id);
+        const itemIndex = cart.findIndex((item) => item.equipment_id === equip.equipment_id);
 
-            if (itemIndex !== -1) {
-                const updatedCart = [...prevCart];
-                updatedCart[itemIndex].quantity += 1;
-                toast.info(`${equip.name} quantity updated in cart`, {
-                    position: "bottom-right",
-                    autoClose: 2000,
-                    theme: "light",
-                });
-                return updatedCart;
-            } else {
-                toast.success(`${equip.name} added to cart`, {
-                    position: "bottom-right",
-                    autoClose: 2000,
-                    theme: "light",
-                });
-                return [...prevCart, { ...equip, quantity: 1 }];
-            }
-        });
+        if (itemIndex !== -1) {
+            const updatedCart = [...cart];
+            updatedCart[itemIndex].quantity += 1;
+            setCart(updatedCart);
+            toast.info(`${equip.name} quantity updated in cart`);
+        } else {
+            setCart([...cart, { ...equip, quantity: 1 }]);
+            toast.success(`${equip.name} added to cart`);
+        }
     };
 
     const removeFromCart = (id) => {
-        setCart((prevCart) => {
-            const item = prevCart.find((item) => item.equipment_id === id);
-            if (item) {
-                toast.info(`${item.name} removed from cart`, {
-                    position: "bottom-right",
-                    autoClose: 2000,
-                    theme: "light",
-                });
-            }
-            return prevCart.filter((item) => item.equipment_id !== id);
-        });
+        const item = cart.find((item) => item.equipment_id === id);
+        if (item) {
+            toast.info(`${item.name} removed from cart`);
+        }
+        setCart(cart.filter((item) => item.equipment_id !== id));
     };
 
     const updateQuantity = (id, newQuantity) => {

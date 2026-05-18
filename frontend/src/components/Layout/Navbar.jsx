@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { CartContext } from "../../context/CartContext";
 import { FaCartShopping } from "react-icons/fa6";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 import user_icon from "../../assets/user_icon.svg";
 
 const Navbar = () => {
@@ -14,17 +14,7 @@ const Navbar = () => {
 
     const handleLogout = () => {
         logout();
-        toast.info("Logged out!", {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            // transition: Bounce,
-        });
+        toast.info("Logged out!");
 
         navigate("/login");
     };
@@ -167,19 +157,6 @@ const Navbar = () => {
                     </>
                 )}
             </div>
-
-            <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
         </div>
     );
 };
