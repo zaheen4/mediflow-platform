@@ -6,7 +6,8 @@ import sahil from "../../assets/images/sahil2.jpeg";
 import arafath from "../../assets/images/arafath.jpg";
 import fatin from "../../assets/images/fatin2.jpeg";
 import healthtech from "../../assets/images/healthtech.jpg";
-
+import tazim from "../../assets/images/tazim.jpg";
+import mediflowlogo from "../../assets/images/mediflow.jpg";
 
 const About = () => {
    return (
@@ -48,9 +49,9 @@ const About = () => {
 
                <div className="mb-20 w-[60%] grid grid-cols-2 gap-4 bg-base-300 px-28 py-16 rounded-2xl">
                   {[
-                     { name: "Fatin Hasan", id: "CS-2203094", image: fatin },
+                     { name: "", id: "", image: mediflowlogo },
                      { name: "Mir Zaheen Waseet", id: "CS-2203104", image: zaheen },
-                     { name: "Towsif Abrar Sahil", id: "CS-2203086", image: sahil },
+                     { name: "Muntasir Noor Tazim", id: "CS-2203100", image: tazim },
                      { name: "Mohammed Arafath Rahman", id: "CS-2203079", image: arafath },
                   ].map((member, index) => (
                      <div key={index} className={`relative rounded-xl student student_${index + 1}`} style={{ backgroundImage: `url(${member.image})`, backgroundSize: 'cover', width: '400px', height: '400px' }}>
