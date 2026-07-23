@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require("mysql2/promise");
 const logger = require("./utils/logger");
 
 const pool = mysql.createPool({
@@ -9,13 +9,14 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME,
 });
 
-pool.getConnection((err, connection) => {
-    if (err) {
+(async () => {
+    try {
+        const conn = await pool.getConnection();
+        logger.info("Connected to MySQL database");
+        conn.release();
+    } catch (err) {
         logger.error("Error connecting to database:", err.stack);
-        return;
     }
-    logger.info("Connected to MySQL database");
-    connection.release();
-});
+})();
 
 module.exports = pool;

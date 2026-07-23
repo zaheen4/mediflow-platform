@@ -23,7 +23,7 @@
     "express-rate-limit": "^8.5.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
-    "mysql": "^2.18.1"
+    "mysql2": "^3.23.1"
   },
   "devDependencies": {
     "jest": "^30.4.2",
