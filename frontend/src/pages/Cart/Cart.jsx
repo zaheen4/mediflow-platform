@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { CartContext } from "../../context/CartContext";
@@ -6,6 +6,7 @@ import api from "../../services/api";
 import { toast } from "sonner";
 
 const Cart = () => {
+    const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
     const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useContext(CartContext);
 
@@ -15,6 +16,7 @@ const Cart = () => {
             return;
         }
 
+        setSubmitting(true);
         try {
             const orderData = {
                 items: cart.map((item) => ({
@@ -31,6 +33,8 @@ const Cart = () => {
         } catch (error) {
             console.error("Checkout error:", error);
             toast.error("Failed to place order. Please try again.");
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -95,10 +99,15 @@ const Cart = () => {
 
                     {cart.length > 0 && (
                         <button
-                            className="fixed bottom-18 right-20 bg-red-500 text-white p-4 rounded-full shadow-lg font-bold"
+                            className="fixed bottom-18 right-20 bg-red-500 text-white p-4 rounded-full shadow-lg font-bold disabled:opacity-50"
                             onClick={handleCheckout}
+                            disabled={submitting}
                         >
-                            Checkout: {getTotalPrice().toFixed(2)} BDT
+                            {submitting ? (
+                                <span className="loading loading-spinner loading-sm"></span>
+                            ) : (
+                                `Checkout: ${getTotalPrice().toFixed(2)} BDT`
+                            )}
                         </button>
                     )}
                 </>

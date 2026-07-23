@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth_routes");
 const equipmentRoutes = require("./routes/equipment_routes");
 const orderRoutes = require("./routes/order_routes");
 const { notFoundMiddleware, errorMiddleware } = require("./middleware/errorMiddleware");
+const logger = require("./utils/logger");
 
 // Initialize Express app
 const app = express();
@@ -58,5 +59,5 @@ app.use(errorMiddleware);
 // Run the Express app
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    logger.info(`Server is running on port ${PORT}`);
 });

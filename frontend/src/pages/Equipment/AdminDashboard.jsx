@@ -7,6 +7,9 @@ const AdminPage = () => {
     const [equipment, setEquipment] = useState([]);
     const [editing, setEditing] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [deleting, setDeleting] = useState(null);
+    const [adding, setAdding] = useState(false);
 
     const [newEquipment, setNewEquipment] = useState({
         name: "",
@@ -39,6 +42,7 @@ const AdminPage = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this equipment?")) return;
 
+        setDeleting(id);
         try {
             await api.delete(`/delete-equipment/${id}`);
             fetchEquipment();
@@ -46,10 +50,22 @@ const AdminPage = () => {
         } catch (error) {
             console.error("Error deleting equipment:", error);
             toast.error("Failed to delete equipment.");
+        } finally {
+            setDeleting(null);
         }
     };
 
     const handleSaveEdit = async () => {
+        if (!editing.name || editing.name.trim().length === 0) {
+            toast.error("Equipment name is required");
+            return;
+        }
+        if (editing.price !== undefined && (isNaN(parseFloat(editing.price)) || parseFloat(editing.price) < 0)) {
+            toast.error("Price must be a non-negative number");
+            return;
+        }
+
+        setSaving(true);
         try {
             await api.put(`/modify-equipment/${editing.equipment_id}`, editing);
             setEditing(null);
@@ -58,10 +74,28 @@ const AdminPage = () => {
         } catch (error) {
             console.error("Error updating equipment:", error);
             toast.error("Failed to update equipment.");
+        } finally {
+            setSaving(false);
         }
     };
 
     const handleAddEquipment = async () => {
+        if (!newEquipment.name || newEquipment.name.trim().length === 0) {
+            toast.error("Equipment name is required");
+            return;
+        }
+        const price = parseFloat(newEquipment.price);
+        if (isNaN(price) || price < 0) {
+            toast.error("Price must be a non-negative number");
+            return;
+        }
+        const quantity = parseInt(newEquipment.quantity);
+        if (isNaN(quantity) || quantity < 0) {
+            toast.error("Quantity must be a non-negative integer");
+            return;
+        }
+
+        setAdding(true);
         try {
             await api.post("/add-equipment", newEquipment);
             setNewEquipment({ name: "", description: "", price: "", quantity: "", image_url: "" });
@@ -70,6 +104,8 @@ const AdminPage = () => {
         } catch (error) {
             console.error("Error adding equipment:", error);
             toast.error("Failed to add equipment.");
+        } finally {
+            setAdding(false);
         }
     };
 
@@ -176,8 +212,16 @@ const AdminPage = () => {
                                     </td>
                                     <td className="p-2 flex justify-center gap-2">
                                         {editing?.equipment_id === equip.equipment_id ? (
-                                            <button className="btn btn-success btn-sm" onClick={handleSaveEdit}>
-                                                Save
+                                            <button
+                                                className="btn btn-success btn-sm"
+                                                onClick={handleSaveEdit}
+                                                disabled={saving}
+                                            >
+                                                {saving ? (
+                                                    <span className="loading loading-spinner loading-xs"></span>
+                                                ) : (
+                                                    "Save"
+                                                )}
                                             </button>
                                         ) : (
                                             <button
@@ -190,8 +234,13 @@ const AdminPage = () => {
                                         <button
                                             className="btn btn-error btn-sm"
                                             onClick={() => handleDelete(equip.equipment_id)}
+                                            disabled={deleting === equip.equipment_id}
                                         >
-                                            <FaTrash />
+                                            {deleting === equip.equipment_id ? (
+                                                <span className="loading loading-spinner loading-xs"></span>
+                                            ) : (
+                                                <FaTrash />
+                                            )}
                                         </button>
                                     </td>
                                 </tr>
@@ -246,8 +295,12 @@ const AdminPage = () => {
                                 />
                             </td>
                             <td className="p-2 text-center">
-                                <button className="btn btn-primary btn-sm" onClick={handleAddEquipment}>
-                                    <FaPlus />
+                                <button
+                                    className="btn btn-primary btn-sm"
+                                    onClick={handleAddEquipment}
+                                    disabled={adding}
+                                >
+                                    {adding ? <span className="loading loading-spinner loading-xs"></span> : <FaPlus />}
                                 </button>
                             </td>
                         </tr>

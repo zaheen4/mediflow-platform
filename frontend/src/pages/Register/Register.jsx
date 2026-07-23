@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
 
+const VALID_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const Register = () => {
     const [formData, setFormData] = useState({
         username: "",
@@ -15,6 +17,7 @@ const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -29,6 +32,22 @@ const Register = () => {
         setErrorMessage("");
         setSuccessMessage("");
 
+        if (!formData.username || formData.username.length < 3 || formData.username.length > 50) {
+            setErrorMessage("Username must be between 3 and 50 characters");
+            return;
+        }
+
+        if (!formData.password || formData.password.length < 6) {
+            setErrorMessage("Password must be at least 6 characters");
+            return;
+        }
+
+        if (!formData.email || !VALID_EMAIL.test(formData.email)) {
+            setErrorMessage("Please enter a valid email address");
+            return;
+        }
+
+        setSubmitting(true);
         try {
             const response = await api.post("/register", formData);
 
@@ -47,10 +66,11 @@ const Register = () => {
         } catch (error) {
             if (error.response) {
                 setErrorMessage(error.response.data.error || "Registration failed!");
-                console.log(error);
             } else {
                 setErrorMessage("An error occurred!");
             }
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -118,9 +138,10 @@ const Register = () => {
                     <div className="flex justify-center">
                         <button
                             type="submit"
-                            className="w-full bg-mediflow-red text-white p-2 rounded-md hover:bg-mediflow-crimson shadow-"
+                            className="w-full bg-mediflow-red text-white p-2 rounded-md hover:bg-mediflow-crimson shadow- disabled:opacity-50"
+                            disabled={submitting}
                         >
-                            Register
+                            {submitting ? <span className="loading loading-spinner loading-sm"></span> : "Register"}
                         </button>
                     </div>
                 </form>

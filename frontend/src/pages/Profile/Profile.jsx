@@ -12,15 +12,22 @@ const Profile = () => {
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
+
+        if (!newPassword || newPassword.length < 6) {
+            toast.error("New password must be at least 6 characters");
+            return;
+        }
 
         if (newPassword !== confirmPassword) {
             toast.error("New passwords do not match");
             return;
         }
 
+        setSubmitting(true);
         try {
             await api.put("/change-password", { currentPassword, newPassword });
             toast.success("Password changed successfully");
@@ -29,6 +36,8 @@ const Profile = () => {
             setConfirmPassword("");
         } catch (error) {
             toast.error(error.response?.data?.error || "Failed to change password");
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -111,8 +120,8 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-full">
-                        Change Password
+                    <button type="submit" className="btn btn-primary w-full" disabled={submitting}>
+                        {submitting ? <span className="loading loading-spinner loading-sm"></span> : "Change Password"}
                     </button>
                 </form>
             </div>

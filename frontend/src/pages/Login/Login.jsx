@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
@@ -12,11 +11,24 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(null);
+    const [submitting, setSubmitting] = useState(false);
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setError(null);
+
+        if (!username.trim()) {
+            setError("Username or email is required");
+            return;
+        }
+        if (!password) {
+            setError("Password is required");
+            return;
+        }
+
+        setSubmitting(true);
         try {
             const response = await api.post("/login", { username, password });
 
@@ -32,6 +44,8 @@ const Login = () => {
             } else {
                 setError("Network error");
             }
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -89,8 +103,13 @@ const Login = () => {
                                 <button
                                     type="submit"
                                     className="btn bg-mediflow-orange border-none hover:bg-mediflow-crimson shadow-xl text-white w-20"
+                                    disabled={submitting}
                                 >
-                                    Login
+                                    {submitting ? (
+                                        <span className="loading loading-spinner loading-sm"></span>
+                                    ) : (
+                                        "Login"
+                                    )}
                                 </button>
                             </div>
                         </form>
