@@ -114,6 +114,25 @@ CREATE TABLE `order_items` (
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 -- Indexes for foreign key columns (improve JOIN/WHERE performance)
+--
+-- Table structure for table `cart_items`
+--
+
+DROP TABLE IF EXISTS `cart_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cart_items` (
+  `cart_item_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `equipment_id` int NOT NULL,
+  `quantity` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`cart_item_id`),
+  UNIQUE KEY `unique_user_equipment` (`user_id`,`equipment_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`equipment_id`) REFERENCES `equipment` (`equipment_id`) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 CREATE INDEX idx_orders_user_id ON orders(user_id);
 CREATE INDEX idx_order_items_order_id ON order_items(order_id);
 CREATE INDEX idx_order_items_equipment_id ON order_items(equipment_id);

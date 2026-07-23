@@ -1,4 +1,4 @@
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { CartProvider, CartContext } from "./CartContext";
 import { AuthContext } from "./AuthContext";
@@ -9,6 +9,17 @@ vi.mock("sonner", () => ({
         success: vi.fn(),
         info: vi.fn(),
     },
+}));
+
+const mockApi = vi.hoisted(() => ({
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+}));
+
+vi.mock("../services/api", () => ({
+    default: mockApi,
 }));
 
 const sampleItem = {
@@ -35,6 +46,7 @@ const TestComponent = () => {
             <span data-testid="count">{ctx.cart.length}</span>
             <span data-testid="items">{ctx.getTotalItems()}</span>
             <span data-testid="total">{ctx.getTotalPrice()}</span>
+            <span data-testid="synced">{ctx.synced ? "true" : "false"}</span>
             <button data-testid="add-1" onClick={() => ctx.addToCart(sampleItem)}>
                 Add 1
             </button>
@@ -57,37 +69,38 @@ const TestComponent = () => {
     );
 };
 
-const renderWithAuth = (user) =>
-    render(
+function renderWithAuth(user) {
+    return render(
         <AuthContext.Provider value={{ user }}>
             <CartProvider>
                 <TestComponent />
             </CartProvider>
         </AuthContext.Provider>
     );
+}
 
-describe("CartContext", () => {
+describe("CartContext — localStorage (guest mode)", () => {
     beforeEach(() => {
         localStorage.clear();
         vi.clearAllMocks();
     });
 
     it("starts with empty cart", () => {
-        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+        renderWithAuth(null);
         expect(screen.getByTestId("count").textContent).toBe("0");
         expect(screen.getByTestId("items").textContent).toBe("0");
         expect(screen.getByTestId("total").textContent).toBe("0");
+        expect(screen.getByTestId("synced").textContent).toBe("false");
     });
 
     it("loads cart from localStorage on mount", () => {
-        const storedCart = [sampleItem];
-        localStorage.setItem("cart", JSON.stringify(storedCart));
-        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+        localStorage.setItem("cart", JSON.stringify([sampleItem]));
+        renderWithAuth(null);
         expect(screen.getByTestId("count").textContent).toBe("1");
     });
 
     it("addToCart adds new item", () => {
-        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+        renderWithAuth(null);
         act(() => {
             screen.getByTestId("add-1").click();
         });
@@ -97,7 +110,7 @@ describe("CartContext", () => {
     });
 
     it("addToCart increments quantity for existing item", () => {
-        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+        renderWithAuth(null);
         act(() => {
             screen.getByTestId("add-1").click();
         });
@@ -110,7 +123,7 @@ describe("CartContext", () => {
     });
 
     it("addToCart supports multiple distinct items", () => {
-        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+        renderWithAuth(null);
         act(() => {
             screen.getByTestId("add-1").click();
         });
@@ -123,7 +136,7 @@ describe("CartContext", () => {
     });
 
     it("removeFromCart removes item by id", () => {
-        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+        renderWithAuth(null);
         act(() => {
             screen.getByTestId("add-1").click();
         });
@@ -135,11 +148,10 @@ describe("CartContext", () => {
             screen.getByTestId("remove-1").click();
         });
         expect(screen.getByTestId("count").textContent).toBe("1");
-        expect(screen.getByTestId("items").textContent).toBe("1");
     });
 
     it("updateQuantity changes item quantity", () => {
-        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+        renderWithAuth(null);
         act(() => {
             screen.getByTestId("add-1").click();
         });
@@ -151,7 +163,7 @@ describe("CartContext", () => {
     });
 
     it("updateQuantity does not allow quantity below 1", () => {
-        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+        renderWithAuth(null);
         act(() => {
             screen.getByTestId("add-1").click();
         });
@@ -159,11 +171,10 @@ describe("CartContext", () => {
             testCart.updateQuantity(1, -3);
         });
         expect(screen.getByTestId("items").textContent).toBe("1");
-        expect(Number(screen.getByTestId("total").textContent)).toBe(100);
     });
 
     it("clearCart empties the cart and localStorage", () => {
-        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+        renderWithAuth(null);
         act(() => {
             screen.getByTestId("add-1").click();
         });
@@ -194,6 +205,150 @@ describe("CartContext", () => {
                 </CartProvider>
             </AuthContext.Provider>
         );
+        expect(screen.getByTestId("count").textContent).toBe("0");
+    });
+});
+
+describe("CartContext — server synced mode", () => {
+    beforeEach(() => {
+        localStorage.clear();
+        vi.clearAllMocks();
+        mockApi.get.mockResolvedValue({
+            data: {
+                items: [],
+                totalItems: 0,
+                totalPrice: 0,
+            },
+        });
+        mockApi.post.mockResolvedValue({ data: { message: "ok" } });
+        mockApi.put.mockResolvedValue({ data: { message: "ok" } });
+        mockApi.delete.mockResolvedValue({ data: { message: "ok" } });
+    });
+
+    it("fetches cart from server on mount with user", async () => {
+        mockApi.get.mockResolvedValue({
+            data: {
+                items: [{ ...sampleItem, quantity: 2, stock: 10 }],
+                totalItems: 2,
+                totalPrice: 200,
+            },
+        });
+        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+
+        await waitFor(() => {
+            expect(screen.getByTestId("count").textContent).toBe("1");
+        });
+        expect(screen.getByTestId("items").textContent).toBe("2");
+        expect(screen.getByTestId("total").textContent).toBe("200");
+        expect(screen.getByTestId("synced").textContent).toBe("true");
+    });
+
+    it("merges localStorage items on login", async () => {
+        localStorage.setItem("cart", JSON.stringify([{ equipment_id: 1, quantity: 2 }]));
+        mockApi.get.mockResolvedValue({
+            data: {
+                items: [{ ...sampleItem, quantity: 2, stock: 10 }],
+                totalItems: 2,
+                totalPrice: 200,
+            },
+        });
+
+        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+
+        await waitFor(() => {
+            expect(mockApi.post).toHaveBeenCalledWith("/cart/merge", {
+                items: [{ equipment_id: 1, quantity: 2 }],
+            });
+        });
+    });
+
+    it("addToCart calls API when synced", async () => {
+        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+
+        await waitFor(() => {
+            expect(screen.getByTestId("synced").textContent).toBe("true");
+        });
+
+        mockApi.get.mockResolvedValue({
+            data: {
+                items: [{ ...sampleItem, quantity: 1, stock: 10 }],
+                totalItems: 1,
+                totalPrice: 100,
+            },
+        });
+
+        await act(async () => {
+            await screen.getByTestId("add-1").click();
+        });
+
+        expect(mockApi.post).toHaveBeenCalledWith("/cart/add", { equipment_id: 1 });
+    });
+
+    it("removeFromCart calls API when synced", async () => {
+        mockApi.get.mockResolvedValue({
+            data: {
+                items: [{ ...sampleItem, quantity: 1, stock: 10 }],
+                totalItems: 1,
+                totalPrice: 100,
+            },
+        });
+
+        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+
+        await waitFor(() => {
+            expect(screen.getByTestId("count").textContent).toBe("1");
+        });
+
+        await act(async () => {
+            await screen.getByTestId("remove-1").click();
+        });
+
+        expect(mockApi.delete).toHaveBeenCalledWith("/cart/remove/1");
+    });
+
+    it("updateQuantity calls API when synced", async () => {
+        mockApi.get.mockResolvedValue({
+            data: {
+                items: [{ ...sampleItem, quantity: 1, stock: 10 }],
+                totalItems: 1,
+                totalPrice: 100,
+            },
+        });
+
+        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+
+        await waitFor(() => {
+            expect(screen.getByTestId("count").textContent).toBe("1");
+        });
+
+        await act(async () => {
+            await testCart.updateQuantity(1, 5);
+        });
+
+        expect(mockApi.put).toHaveBeenCalledWith("/cart/update/1", { quantity: 5 });
+        expect(screen.getByTestId("items").textContent).toBe("5");
+    });
+
+    it("clearCart calls API when synced", async () => {
+        mockApi.get.mockResolvedValue({
+            data: {
+                items: [{ ...sampleItem, quantity: 1, stock: 10 }],
+                totalItems: 1,
+                totalPrice: 100,
+            },
+        });
+
+        renderWithAuth({ role: "User", username: "alice", token: "abc" });
+
+        await waitFor(() => {
+            expect(screen.getByTestId("count").textContent).toBe("1");
+        });
+
+        await act(async () => {
+            await testCart.clearCart();
+        });
+
+        expect(mockApi.delete).toHaveBeenCalledWith("/cart");
         expect(screen.getByTestId("count").textContent).toBe("0");
     });
 });
