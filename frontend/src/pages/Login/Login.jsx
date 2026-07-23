@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
 import login_image2 from "../../assets/luke-chesser-CxBx_J3yp9g-unsplash.jpg";
@@ -15,15 +15,10 @@ const Login = () => {
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${API_BASE_URL}/login`, {
-                username,
-                password,
-            });
+            const response = await api.post("/login", { username, password });
 
             const data = response.data;
             login(data);

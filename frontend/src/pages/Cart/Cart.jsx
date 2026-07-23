@@ -2,15 +2,12 @@ import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { CartContext } from "../../context/CartContext";
-import { AuthContext } from "../../context/AuthContext";
-import axios from "axios";
+import api from "../../services/api";
 import { toast } from "sonner";
 
 const Cart = () => {
     const navigate = useNavigate();
     const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useContext(CartContext);
-    const { user } = useContext(AuthContext);
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     const handleCheckout = async () => {
         if (cart.length === 0) {
@@ -23,14 +20,10 @@ const Cart = () => {
                 items: cart.map((item) => ({
                     equipment_id: item.equipment_id,
                     quantity: item.quantity,
-                    price: item.price,
                 })),
-                totalAmount: getTotalPrice(),
             };
 
-            const response = await axios.post(`${API_BASE_URL}/create-order`, orderData, {
-                headers: { Authorization: `Bearer ${user.token}` },
-            });
+            const response = await api.post("/create-order", orderData);
 
             clearCart();
             toast.success(`Order placed successfully! Order ID: ${response.data.orderId}`);

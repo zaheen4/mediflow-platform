@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { toast } from "sonner";
 
@@ -16,13 +16,9 @@ const AdminPage = () => {
         image_url: "",
     });
 
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-    const token = JSON.parse(localStorage.getItem("user"))?.token;
-
     const fetchEquipment = useCallback(async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/equipment`);
+            const response = await api.get("/equipment");
             setEquipment(response.data);
         } catch (error) {
             console.error("Error fetching equipment:", error);
@@ -30,7 +26,7 @@ const AdminPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [API_BASE_URL]);
+    }, []);
 
     useEffect(() => {
         fetchEquipment();
@@ -44,9 +40,7 @@ const AdminPage = () => {
         if (!window.confirm("Are you sure you want to delete this equipment?")) return;
 
         try {
-            await axios.delete(`${API_BASE_URL}/delete-equipment/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            await api.delete(`/delete-equipment/${id}`);
             fetchEquipment();
             toast.success("Equipment deleted successfully");
         } catch (error) {
@@ -57,9 +51,7 @@ const AdminPage = () => {
 
     const handleSaveEdit = async () => {
         try {
-            await axios.put(`${API_BASE_URL}/modify-equipment/${editing.equipment_id}`, editing, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            await api.put(`/modify-equipment/${editing.equipment_id}`, editing);
             setEditing(null);
             fetchEquipment();
             toast.success("Equipment updated successfully");
@@ -71,9 +63,7 @@ const AdminPage = () => {
 
     const handleAddEquipment = async () => {
         try {
-            await axios.post(`${API_BASE_URL}/add-equipment`, newEquipment, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            await api.post("/add-equipment", newEquipment);
             setNewEquipment({ name: "", description: "", price: "", quantity: "", image_url: "" });
             fetchEquipment();
             toast.success("Equipment added successfully");

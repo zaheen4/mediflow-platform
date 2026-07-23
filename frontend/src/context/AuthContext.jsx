@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import { setUnauthorizedHandler } from "../services/api";
 
 export const AuthContext = createContext();
 
@@ -23,6 +24,10 @@ const AuthProvider = ({ children }) => {
         localStorage.removeItem("user");
         setUser(null);
     };
+
+    useEffect(() => {
+        setUnauthorizedHandler(logout);
+    }, []);
 
     return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
 };

@@ -1,19 +1,14 @@
-import { useState, useEffect, useContext } from "react";
-import axios from "axios";
-import { AuthContext } from "../../context/AuthContext";
+import { useState, useEffect } from "react";
+import api from "../../services/api";
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { user } = useContext(AuthContext);
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const res = await axios.get(`${API_BASE_URL}/my-orders`, {
-                    headers: { Authorization: `Bearer ${user.token}` },
-                });
+                const res = await api.get("/my-orders");
                 setOrders(res.data);
             } catch (error) {
                 console.error("Failed to fetch orders:", error);
@@ -23,7 +18,7 @@ const OrderHistory = () => {
         };
 
         fetchOrders();
-    }, [API_BASE_URL, user.token]);
+    }, []);
 
     if (loading) {
         return (

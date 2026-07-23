@@ -1,6 +1,6 @@
 import login_image2 from "../../assets/luke-chesser-CxBx_J3yp9g-unsplash.jpg";
 import { useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
@@ -17,8 +17,6 @@ const Register = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
 
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -32,11 +30,7 @@ const Register = () => {
         setSuccessMessage("");
 
         try {
-            const response = await axios.post(`${API_BASE_URL}/register`, formData, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
+            const response = await api.post("/register", formData);
 
             setSuccessMessage(response.data.message);
             setFormData({

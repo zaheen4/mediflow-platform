@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import bdt_icon2 from "../../assets/bdt_icon2.svg";
 import { FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -11,11 +11,9 @@ const Shop = () => {
     const [loading, setLoading] = useState(true);
     const { addToCart, getTotalItems } = useContext(CartContext);
     const navigate = useNavigate();
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
-        axios
-            .get(`${API_BASE_URL}/equipment`)
+        api.get("/equipment")
             .then((response) => {
                 setEquipment(response.data);
                 setLoading(false);
@@ -25,7 +23,7 @@ const Shop = () => {
                 toast.error("Failed to load equipment. Please try again.");
                 setLoading(false);
             });
-    }, [API_BASE_URL]);
+    }, []);
 
     if (loading) {
         return (

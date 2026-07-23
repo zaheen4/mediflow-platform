@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import axios from "axios";
+import api from "../../services/api";
 import { toast } from "sonner";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -12,7 +12,6 @@ const Profile = () => {
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
@@ -23,11 +22,7 @@ const Profile = () => {
         }
 
         try {
-            await axios.put(
-                `${API_BASE_URL}/change-password`,
-                { currentPassword, newPassword },
-                { headers: { Authorization: `Bearer ${user.token}` } }
-            );
+            await api.put("/change-password", { currentPassword, newPassword });
             toast.success("Password changed successfully");
             setCurrentPassword("");
             setNewPassword("");
