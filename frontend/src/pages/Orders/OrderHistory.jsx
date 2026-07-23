@@ -4,12 +4,22 @@ import api from "../../services/api";
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
         const fetchOrders = async () => {
+            setLoading(true);
             try {
-                const res = await api.get("/my-orders");
-                setOrders(res.data);
+                const res = await api.get("/my-orders", { params: { page, limit: 10 } });
+                const body = res.data;
+                if (Array.isArray(body)) {
+                    setOrders(body);
+                    setTotalPages(1);
+                } else {
+                    setOrders(body.data);
+                    setTotalPages(body.totalPages);
+                }
             } catch (error) {
                 console.error("Failed to fetch orders:", error);
             } finally {
@@ -18,7 +28,7 @@ const OrderHistory = () => {
         };
 
         fetchOrders();
-    }, []);
+    }, [page]);
 
     if (loading) {
         return (
@@ -82,6 +92,34 @@ const OrderHistory = () => {
                     </div>
                 ))}
             </div>
+
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 mt-8">
+                    <button
+                        className="btn btn-sm"
+                        disabled={page <= 1}
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    >
+                        Previous
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                        <button
+                            key={p}
+                            className={`btn btn-sm ${p === page ? "btn-primary" : "btn-ghost"}`}
+                            onClick={() => setPage(p)}
+                        >
+                            {p}
+                        </button>
+                    ))}
+                    <button
+                        className="btn btn-sm"
+                        disabled={page >= totalPages}
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

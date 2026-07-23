@@ -7,11 +7,47 @@ const { validateEquipmentData } = require("../utils/validation");
 
 const router = express.Router();
 
-// Fetch all equipment (public route)
+// Fetch all equipment (public route, supports pagination & search)
 router.get("/equipment", async (req, res) => {
-    const query = "SELECT * FROM equipment";
-    const equipment = await executeQuery(query);
-    res.status(200).json(equipment);
+    const { page, limit, search } = req.query;
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 0;
+    const offset = (pageNum - 1) * limitNum;
+
+    let whereClause = "";
+    const params = [];
+    if (search) {
+        whereClause = " WHERE name LIKE ? OR description LIKE ?";
+        const pattern = `%${search}%`;
+        params.push(pattern, pattern);
+    }
+
+    const countResult = await executeQuery(`SELECT COUNT(*) AS total FROM equipment${whereClause}`, params);
+    const total = countResult[0].total;
+
+    let equipment;
+    if (limitNum > 0) {
+        equipment = await executeQuery(`SELECT * FROM equipment${whereClause} ORDER BY equipment_id LIMIT ? OFFSET ?`, [
+            ...params,
+            limitNum,
+            offset,
+        ]);
+    } else {
+        equipment = await executeQuery(`SELECT * FROM equipment${whereClause} ORDER BY equipment_id`);
+    }
+
+    // Return flat array when no pagination/search requested (backward compat)
+    if (!page && !limit && !search) {
+        return res.status(200).json(equipment);
+    }
+
+    res.status(200).json({
+        data: equipment,
+        total,
+        page: pageNum,
+        limit: limitNum || equipment.length,
+        totalPages: limitNum > 0 ? Math.ceil(total / limitNum) : 1,
+    });
 });
 
 // Fetch details of a specific equipment (public route)

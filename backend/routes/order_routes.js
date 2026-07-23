@@ -96,9 +96,27 @@ router.post("/create-order", verifyToken, async (req, res) => {
 
 // Get order history for the authenticated user
 router.get("/my-orders", verifyToken, async (req, res) => {
-    const orders = await executeQuery("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC", [
+    const { page, limit } = req.query;
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 0;
+    const offset = (pageNum - 1) * limitNum;
+
+    const countResult = await executeQuery("SELECT COUNT(*) AS total FROM orders WHERE user_id = ?", [
         req.user.user_id,
     ]);
+    const total = countResult[0].total;
+
+    let orders;
+    if (limitNum > 0) {
+        orders = await executeQuery(
+            "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            [req.user.user_id, limitNum, offset]
+        );
+    } else {
+        orders = await executeQuery("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC", [
+            req.user.user_id,
+        ]);
+    }
 
     for (const order of orders) {
         const items = await executeQuery(
@@ -111,17 +129,47 @@ router.get("/my-orders", verifyToken, async (req, res) => {
         order.items = items;
     }
 
-    res.status(200).json(orders);
+    if (!page && !limit) {
+        return res.status(200).json(orders);
+    }
+
+    res.status(200).json({
+        data: orders,
+        total,
+        page: pageNum,
+        limit: limitNum || orders.length,
+        totalPages: limitNum > 0 ? Math.ceil(total / limitNum) : 1,
+    });
 });
 
 // Get all orders (Admin only)
 router.get("/all-orders", verifyToken, requireAdmin, async (req, res) => {
-    const orders = await executeQuery(
-        `SELECT o.*, u.username
-         FROM orders o
-         JOIN users u ON o.user_id = u.user_id
-         ORDER BY o.created_at DESC`
-    );
+    const { page, limit } = req.query;
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 0;
+    const offset = (pageNum - 1) * limitNum;
+
+    const countResult = await executeQuery("SELECT COUNT(*) AS total FROM orders");
+    const total = countResult[0].total;
+
+    let orders;
+    if (limitNum > 0) {
+        orders = await executeQuery(
+            `SELECT o.*, u.username
+             FROM orders o
+             JOIN users u ON o.user_id = u.user_id
+             ORDER BY o.created_at DESC
+             LIMIT ? OFFSET ?`,
+            [limitNum, offset]
+        );
+    } else {
+        orders = await executeQuery(
+            `SELECT o.*, u.username
+             FROM orders o
+             JOIN users u ON o.user_id = u.user_id
+             ORDER BY o.created_at DESC`
+        );
+    }
 
     for (const order of orders) {
         const items = await executeQuery(
@@ -134,7 +182,17 @@ router.get("/all-orders", verifyToken, requireAdmin, async (req, res) => {
         order.items = items;
     }
 
-    res.status(200).json(orders);
+    if (!page && !limit) {
+        return res.status(200).json(orders);
+    }
+
+    res.status(200).json({
+        data: orders,
+        total,
+        page: pageNum,
+        limit: limitNum || orders.length,
+        totalPages: limitNum > 0 ? Math.ceil(total / limitNum) : 1,
+    });
 });
 
 // Update order status (Admin only)
