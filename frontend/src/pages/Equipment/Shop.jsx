@@ -161,6 +161,7 @@ const Shop = () => {
                                             <button
                                                 className="btn btn-soft btn-error text-black hover:text-white"
                                                 onClick={() => addToCart(equip)}
+                                                aria-label={`Add ${equip.name} to cart`}
                                             >
                                                 Add to cart
                                             </button>
@@ -203,6 +204,7 @@ const Shop = () => {
                 <button
                     className="fixed bottom-18 right-20 bg-red-500 text-white p-4 rounded-full shadow-lg flex items-center gap-2"
                     onClick={() => navigate("/cart")}
+                    aria-label={`Cart with ${getTotalItems()} items`}
                 >
                     <FaShoppingCart />
                     Cart ({getTotalItems()})

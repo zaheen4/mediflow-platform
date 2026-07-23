@@ -13,11 +13,11 @@ const HomeLayout = () => {
     return (
         <div>
             <Navbar />
-            <div className="mx-auto">
+            <main id="main-content" className="mx-auto">
                 <Suspense fallback={fallback}>
                     <Outlet />
                 </Suspense>
-            </div>
+            </main>
             <Footer />
         </div>
     );

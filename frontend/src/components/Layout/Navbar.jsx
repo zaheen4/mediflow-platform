@@ -69,7 +69,7 @@ const Navbar = () => {
             <div className="navbar-start">
                 {/* Mobile Dropdown */}
                 <div className="dropdown">
-                    <button tabIndex={0} className="btn btn-ghost lg:hidden">
+                    <button tabIndex={0} className="btn btn-ghost lg:hidden" aria-label="Open navigation menu">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-5 w-5"
@@ -112,7 +112,11 @@ const Navbar = () => {
                     {dark ? <FaSun className="text-xl" /> : <FaMoon className="text-xl" />}
                 </button>
                 {user && (
-                    <Link to="/cart" className="btn btn-ghost btn-circle mr-2 relative">
+                    <Link
+                        to="/cart"
+                        className="btn btn-ghost btn-circle mr-2 relative"
+                        aria-label={`Shopping cart with ${getTotalItems()} items`}
+                    >
                         <FaCartShopping className="text-xl" />
                         {getTotalItems() > 0 && (
                             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -124,7 +128,7 @@ const Navbar = () => {
 
                 {user ? (
                     <div className="dropdown dropdown-end mr-2">
-                        <div tabIndex={0} className="btn btn-ghost flex items-center gap-2">
+                        <div tabIndex={0} className="btn btn-ghost flex items-center gap-2" aria-label="User menu">
                             <img src={user_icon} alt="User Icon" className="w-8 h-8 rounded-full" />
                             <span>{user.username}</span>
                         </div>

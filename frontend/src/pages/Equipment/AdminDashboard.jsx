@@ -178,6 +178,8 @@ const AdminPage = () => {
                 <button
                     className={`btn ${tab === "equipment" ? "btn-primary" : "btn-ghost"}`}
                     onClick={() => setTab("equipment")}
+                    role="tab"
+                    aria-selected={tab === "equipment"}
                 >
                     <FaBox className="mr-1" /> Equipment
                 </button>
