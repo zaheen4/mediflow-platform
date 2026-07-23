@@ -11,6 +11,7 @@ import Services from "../pages/About/Services";
 import Cart from "../pages/Cart/Cart";
 import OrderHistory from "../pages/Orders/OrderHistory";
 import Profile from "../pages/Profile/Profile";
+import NotFound from "../pages/NotFound/NotFound";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 export const router = createBrowserRouter([
@@ -77,6 +78,10 @@ export const router = createBrowserRouter([
             {
                 path: "/services",
                 element: <Services />,
+            },
+            {
+                path: "*",
+                element: <NotFound />,
             },
         ],
     },
