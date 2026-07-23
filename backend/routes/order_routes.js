@@ -1,38 +1,94 @@
 const express = require("express");
-const { executeQuery } = require("../utils/db_utils");
+const {
+    executeQuery,
+    beginTransaction,
+    queryWithConnection,
+    commitTransaction,
+    rollbackTransaction,
+} = require("../utils/db_utils");
 const { verifyToken } = require("../utils/auth_utils");
 
 const router = express.Router();
 
 // Create a new order (authenticated users only)
 router.post("/create-order", verifyToken, async (req, res) => {
-    const { items, totalAmount } = req.body;
+    const { items } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ error: "Order must contain at least one item" });
     }
 
-    if (!totalAmount || totalAmount <= 0) {
-        return res.status(400).json({ error: "Invalid total amount" });
-    }
+    const validatedItems = [];
+    let totalAmount = 0;
 
     try {
-        const orderResult = await executeQuery("INSERT INTO orders (user_id, total_amount) VALUES (?, ?)", [
-            req.user.user_id,
-            totalAmount,
-        ]);
+        for (const item of items) {
+            if (!item.equipment_id || !item.quantity || item.quantity <= 0) {
+                return res.status(400).json({ error: "Invalid item data" });
+            }
+
+            const equipment = await executeQuery(
+                "SELECT equipment_id, name, price, quantity FROM equipment WHERE equipment_id = ?",
+                [item.equipment_id]
+            );
+
+            if (equipment.length === 0) {
+                return res.status(404).json({ error: `Equipment with ID ${item.equipment_id} not found` });
+            }
+
+            const eq = equipment[0];
+
+            if (eq.quantity < item.quantity) {
+                return res.status(400).json({
+                    error: `Insufficient stock for ${eq.name}. Available: ${eq.quantity}, requested: ${item.quantity}`,
+                });
+            }
+
+            const subtotal = parseFloat(eq.price) * item.quantity;
+            totalAmount += subtotal;
+
+            validatedItems.push({
+                equipment_id: eq.equipment_id,
+                quantity: item.quantity,
+                price_at_purchase: eq.price,
+            });
+        }
+    } catch (error) {
+        console.error("Error validating order items:", error);
+        return res.status(500).json({ error: "Failed to validate order" });
+    }
+
+    let connection;
+    try {
+        connection = await beginTransaction();
+
+        const orderResult = await queryWithConnection(
+            connection,
+            "INSERT INTO orders (user_id, total_amount) VALUES (?, ?)",
+            [req.user.user_id, totalAmount]
+        );
 
         const orderId = orderResult.insertId;
 
-        for (const item of items) {
-            await executeQuery(
+        for (const item of validatedItems) {
+            await queryWithConnection(
+                connection,
                 "INSERT INTO order_items (order_id, equipment_id, quantity, price_at_purchase) VALUES (?, ?, ?, ?)",
-                [orderId, item.equipment_id, item.quantity, item.price]
+                [orderId, item.equipment_id, item.quantity, item.price_at_purchase]
+            );
+
+            await queryWithConnection(
+                connection,
+                "UPDATE equipment SET quantity = quantity - ? WHERE equipment_id = ?",
+                [item.quantity, item.equipment_id]
             );
         }
 
+        await commitTransaction(connection);
+        connection = null;
         res.status(201).json({ message: "Order created successfully", orderId });
     } catch (error) {
+        if (connection) await rollbackTransaction(connection);
         console.error("Error creating order:", error);
         res.status(500).json({ error: "Failed to create order" });
     }
