@@ -9,6 +9,7 @@ const Login = lazy(() => import("../pages/Login/Login"));
 const WelcomePage = lazy(() => import("../pages/Home/WelcomePage"));
 const Register = lazy(() => import("../pages/Register/Register"));
 const Shop = lazy(() => import("../pages/Equipment/Shop"));
+const EquipmentDetail = lazy(() => import("../pages/Equipment/EquipmentDetail"));
 const AdminDashboard = lazy(() => import("../pages/Equipment/AdminDashboard"));
 const About = lazy(() => import("../pages/About/About"));
 const Services = lazy(() => import("../pages/About/Services"));
@@ -43,6 +44,15 @@ export const router = createBrowserRouter([
                         <Shop />
                     </ProtectedRoute>,
                     "Shop"
+                ),
+            },
+            {
+                path: "/equipment/:id",
+                element: wrap(
+                    <ProtectedRoute>
+                        <EquipmentDetail />
+                    </ProtectedRoute>,
+                    "EquipmentDetail"
                 ),
             },
             {

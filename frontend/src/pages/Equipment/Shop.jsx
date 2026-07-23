@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import api from "../../services/api";
 import bdt_icon2 from "../../assets/bdt_icon2.svg";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { toast } from "sonner";
 
@@ -120,11 +120,15 @@ const Shop = () => {
                                     key={equip.equipment_id}
                                     className="card items-center bg-[#ffffff] shadow-[0_0_20px_rgba(0,0,0,0.2)]"
                                 >
-                                    <figure className="w-48 h-48 flex items-center justify-center">
-                                        <img className="h-full py-2" src={equip.image_url} alt={equip.name} />
-                                    </figure>
+                                    <Link to={`/equipment/${equip.equipment_id}`} className="w-full">
+                                        <figure className="w-48 h-48 flex items-center justify-center mx-auto">
+                                            <img className="h-full py-2" src={equip.image_url} alt={equip.name} />
+                                        </figure>
+                                    </Link>
                                     <div className="card-body w-full bg-[#ffcece] rounded-md">
-                                        <h2 className="card-title">{equip.name}</h2>
+                                        <Link to={`/equipment/${equip.equipment_id}`}>
+                                            <h2 className="card-title hover:underline">{equip.name}</h2>
+                                        </Link>
                                         <p>{equip.description}</p>
                                         <p className="pt-4 text-[16px] flex items-center">
                                             <img src={bdt_icon2} alt="bdt_icon" className="size-5" /> {equip.price}
