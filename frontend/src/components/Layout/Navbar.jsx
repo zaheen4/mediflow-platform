@@ -1,8 +1,8 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { CartContext } from "../../context/CartContext";
-import { FaCartShopping } from "react-icons/fa6";
+import { FaCartShopping, FaMoon, FaSun } from "react-icons/fa6";
 import { toast } from "sonner";
 import user_icon from "../../assets/user_icon.svg";
 
@@ -11,6 +11,13 @@ const Navbar = () => {
     const { getTotalItems } = useContext(CartContext);
     const navigate = useNavigate();
     const location = useLocation();
+    const [dark, setDark] = useState(() => localStorage.getItem("theme") === "dark");
+
+    useEffect(() => {
+        const theme = dark ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+    }, [dark]);
 
     const handleLogout = () => {
         logout();
@@ -97,6 +104,13 @@ const Navbar = () => {
 
             {/* Navbar End */}
             <div className="navbar-end">
+                <button
+                    className="btn btn-ghost btn-circle mr-2"
+                    onClick={() => setDark((prev) => !prev)}
+                    aria-label="Toggle theme"
+                >
+                    {dark ? <FaSun className="text-xl" /> : <FaMoon className="text-xl" />}
+                </button>
                 {user && (
                     <Link to="/cart" className="btn btn-ghost btn-circle mr-2 relative">
                         <FaCartShopping className="text-xl" />
