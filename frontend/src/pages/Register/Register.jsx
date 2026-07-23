@@ -9,7 +9,6 @@ const Register = () => {
     const [formData, setFormData] = useState({
         username: "",
         password: "",
-        role: "User",
         email: "",
     });
 
@@ -43,7 +42,6 @@ const Register = () => {
             setFormData({
                 username: "",
                 password: "",
-                role: "User",
                 email: "",
             });
 
@@ -122,22 +120,7 @@ const Register = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="mb-4">
-                        <label htmlFor="role" className="block text-sm font-semibold text-white">
-                            Role
-                        </label>
-                        <select
-                            id="role"
-                            name="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                            required
-                            className="w-full mt-2 p-2 border-none rounded-md text-black bg-white"
-                        >
-                            <option value="User">User</option>
-                            <option value="Admin">Admin</option>
-                        </select>
-                    </div>
+
                     <div className="flex justify-center">
                         <button
                             type="submit"

@@ -9,7 +9,7 @@ const router = express.Router();
 
 // User Registration Route
 router.post("/register", async (req, res) => {
-    const { username, password, role, email } = req.body;
+    const { username, password, email } = req.body;
 
     if (!username || username.length < 3 || username.length > 50) {
         return res.status(400).json({ error: "Username must be between 3 and 50 characters" });
@@ -24,14 +24,10 @@ router.post("/register", async (req, res) => {
         return res.status(400).json({ error: "Invalid email format" });
     }
 
-    if (!role || !["Admin", "User"].includes(role)) {
-        return res.status(400).json({ error: "Role must be 'Admin' or 'User'" });
-    }
-
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const query = "INSERT INTO users (username, password, role, email) VALUES (?, ?, ?, ?)";
-        await executeQuery(query, [username, hashedPassword, role, email]);
+        await executeQuery(query, [username, hashedPassword, "User", email]);
         res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
         if (error.code === "ER_DUP_ENTRY") {
