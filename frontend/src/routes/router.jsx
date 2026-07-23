@@ -1,18 +1,23 @@
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import HomeLayout from "../components/Layout/HomeLayout";
-import Login from "../pages/Login/Login";
-import WelcomePage from "../pages/Home/WelcomePage";
-import Register from "../pages/Register/Register";
-import Shop from "../pages/Equipment/Shop";
-import AdminDashboard from "../pages/Equipment/AdminDashboard";
-import About from "../pages/About/About";
-import Services from "../pages/About/Services";
-import Cart from "../pages/Cart/Cart";
-import OrderHistory from "../pages/Orders/OrderHistory";
-import Profile from "../pages/Profile/Profile";
-import NotFound from "../pages/NotFound/NotFound";
 import ProtectedRoute from "../components/ProtectedRoute";
+import RouteErrorBoundary from "../components/RouteErrorBoundary";
+
+const Login = lazy(() => import("../pages/Login/Login"));
+const WelcomePage = lazy(() => import("../pages/Home/WelcomePage"));
+const Register = lazy(() => import("../pages/Register/Register"));
+const Shop = lazy(() => import("../pages/Equipment/Shop"));
+const AdminDashboard = lazy(() => import("../pages/Equipment/AdminDashboard"));
+const About = lazy(() => import("../pages/About/About"));
+const Services = lazy(() => import("../pages/About/Services"));
+const Cart = lazy(() => import("../pages/Cart/Cart"));
+const OrderHistory = lazy(() => import("../pages/Orders/OrderHistory"));
+const Profile = lazy(() => import("../pages/Profile/Profile"));
+const NotFound = lazy(() => import("../pages/NotFound/NotFound"));
+
+const wrap = (element, name) => <RouteErrorBoundary name={name}>{element}</RouteErrorBoundary>;
 
 export const router = createBrowserRouter([
     {
@@ -21,67 +26,72 @@ export const router = createBrowserRouter([
         children: [
             {
                 path: "/",
-                element: <WelcomePage />,
+                element: wrap(<WelcomePage />, "WelcomePage"),
             },
             {
                 path: "/login",
-                element: <Login />,
+                element: wrap(<Login />, "Login"),
             },
             {
                 path: "/register",
-                element: <Register />,
+                element: wrap(<Register />, "Register"),
             },
             {
                 path: "/buy-equipment",
-                element: (
+                element: wrap(
                     <ProtectedRoute>
                         <Shop />
-                    </ProtectedRoute>
+                    </ProtectedRoute>,
+                    "Shop"
                 ),
             },
             {
                 path: "/cart",
-                element: (
+                element: wrap(
                     <ProtectedRoute>
                         <Cart />
-                    </ProtectedRoute>
+                    </ProtectedRoute>,
+                    "Cart"
                 ),
             },
             {
                 path: "/orders",
-                element: (
+                element: wrap(
                     <ProtectedRoute>
                         <OrderHistory />
-                    </ProtectedRoute>
+                    </ProtectedRoute>,
+                    "OrderHistory"
                 ),
             },
             {
                 path: "/profile",
-                element: (
+                element: wrap(
                     <ProtectedRoute>
                         <Profile />
-                    </ProtectedRoute>
+                    </ProtectedRoute>,
+                    "Profile"
                 ),
             },
             {
                 path: "/admin-dashboard",
-                element: (
+                element: wrap(
                     <ProtectedRoute adminOnly>
                         <AdminDashboard />
-                    </ProtectedRoute>
+                    </ProtectedRoute>,
+                    "AdminDashboard"
                 ),
             },
             {
                 path: "/about",
-                element: <About />,
+                element: wrap(<About />, "About"),
             },
             {
                 path: "/services",
-                element: <Services />,
+                element: wrap(<Services />, "Services"),
             },
             {
                 path: "*",
-                element: <NotFound />,
+                element: wrap(<NotFound />, "NotFound"),
             },
         ],
     },
