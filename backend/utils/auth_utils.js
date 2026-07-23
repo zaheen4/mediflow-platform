@@ -1,11 +1,11 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 function generateToken(user_id, role) {
     const payload = {
         user_id: user_id,
         role: role,
     };
-    return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
+    return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" });
 }
 
 function verifyToken(req, res, next) {
@@ -18,7 +18,7 @@ function verifyToken(req, res, next) {
         const decodedToken = jwt.verify(token.split(" ")[1], process.env.SECRET_KEY);
         req.user = decodedToken;
         next();
-    } catch (error) {
+    } catch {
         return res.status(401).json({ error: "Invalid token" });
     }
 }

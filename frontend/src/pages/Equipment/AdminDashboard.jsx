@@ -264,7 +264,6 @@ const AdminPage = () => {
                     </tbody>
                 </table>
             </div>
-
         </div>
     );
 };

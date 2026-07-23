@@ -1,4 +1,4 @@
-const pool = require('../db_connection');
+const pool = require("../db_connection");
 
 function executeQuery(query, params) {
     return new Promise((resolve, reject) => {

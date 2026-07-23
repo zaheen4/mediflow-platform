@@ -1,6 +1,6 @@
-const express = require('express');
-const { executeQuery } = require('../utils/db_utils');
-const { verifyToken } = require('../utils/auth_utils');
+const express = require("express");
+const { executeQuery } = require("../utils/db_utils");
+const { verifyToken } = require("../utils/auth_utils");
 
 const router = express.Router();
 
@@ -31,7 +31,7 @@ function validateEquipment(data, isUpdate = false) {
 }
 
 // Fetch all equipment (public route)
-router.get('/equipment', async (req, res) => {
+router.get("/equipment", async (req, res) => {
     try {
         const query = "SELECT * FROM equipment";
         const equipment = await executeQuery(query);
@@ -42,7 +42,7 @@ router.get('/equipment', async (req, res) => {
 });
 
 // Fetch details of a specific equipment (public route)
-router.get('/equipment/:equipment_id', async (req, res) => {
+router.get("/equipment/:equipment_id", async (req, res) => {
     const { equipment_id } = req.params;
     try {
         const query = "SELECT * FROM equipment WHERE equipment_id = ?";
@@ -58,7 +58,7 @@ router.get('/equipment/:equipment_id', async (req, res) => {
 });
 
 // Add equipment (Admin only)
-router.post('/add-equipment', verifyToken, async (req, res) => {
+router.post("/add-equipment", verifyToken, async (req, res) => {
     if (req.user.role !== "Admin") {
         return res.status(403).json({ error: "Access denied" });
     }
@@ -80,7 +80,7 @@ router.post('/add-equipment', verifyToken, async (req, res) => {
 });
 
 // Modify equipment (Admin only)
-router.put('/modify-equipment/:equipment_id', verifyToken, async (req, res) => {
+router.put("/modify-equipment/:equipment_id", verifyToken, async (req, res) => {
     if (req.user.role !== "Admin") {
         return res.status(403).json({ error: "Access denied" });
     }
@@ -107,7 +107,7 @@ router.put('/modify-equipment/:equipment_id', verifyToken, async (req, res) => {
 });
 
 // Delete equipment (Admin only)
-router.delete('/delete-equipment/:equipment_id', verifyToken, async (req, res) => {
+router.delete("/delete-equipment/:equipment_id", verifyToken, async (req, res) => {
     if (req.user.role !== "Admin") {
         return res.status(403).json({ error: "Access denied" });
     }

@@ -1,11 +1,11 @@
-const express = require('express');
-const { executeQuery } = require('../utils/db_utils');
-const { verifyToken } = require('../utils/auth_utils');
+const express = require("express");
+const { executeQuery } = require("../utils/db_utils");
+const { verifyToken } = require("../utils/auth_utils");
 
 const router = express.Router();
 
 // Create a new order (authenticated users only)
-router.post('/create-order', verifyToken, async (req, res) => {
+router.post("/create-order", verifyToken, async (req, res) => {
     const { items, totalAmount } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -17,16 +17,16 @@ router.post('/create-order', verifyToken, async (req, res) => {
     }
 
     try {
-        const orderResult = await executeQuery(
-            'INSERT INTO orders (user_id, total_amount) VALUES (?, ?)',
-            [req.user.user_id, totalAmount]
-        );
+        const orderResult = await executeQuery("INSERT INTO orders (user_id, total_amount) VALUES (?, ?)", [
+            req.user.user_id,
+            totalAmount,
+        ]);
 
         const orderId = orderResult.insertId;
 
         for (const item of items) {
             await executeQuery(
-                'INSERT INTO order_items (order_id, equipment_id, quantity, price_at_purchase) VALUES (?, ?, ?, ?)',
+                "INSERT INTO order_items (order_id, equipment_id, quantity, price_at_purchase) VALUES (?, ?, ?, ?)",
                 [orderId, item.equipment_id, item.quantity, item.price]
             );
         }
@@ -39,12 +39,11 @@ router.post('/create-order', verifyToken, async (req, res) => {
 });
 
 // Get order history for the authenticated user
-router.get('/my-orders', verifyToken, async (req, res) => {
+router.get("/my-orders", verifyToken, async (req, res) => {
     try {
-        const orders = await executeQuery(
-            'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC',
-            [req.user.user_id]
-        );
+        const orders = await executeQuery("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC", [
+            req.user.user_id,
+        ]);
 
         for (const order of orders) {
             const items = await executeQuery(
@@ -65,7 +64,7 @@ router.get('/my-orders', verifyToken, async (req, res) => {
 });
 
 // Get all orders (Admin only)
-router.get('/all-orders', verifyToken, async (req, res) => {
+router.get("/all-orders", verifyToken, async (req, res) => {
     if (req.user.role !== "Admin") {
         return res.status(403).json({ error: "Access denied" });
     }
