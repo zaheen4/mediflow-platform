@@ -5,7 +5,7 @@ function generateToken(user_id, role) {
         user_id: user_id,
         role: role,
     };
-    return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" });
+    return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: process.env.JWT_EXPIRATION || "1h" });
 }
 
 function verifyToken(req, res, next) {
