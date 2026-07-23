@@ -31,3 +31,11 @@ backend/node_modules/
 # Environment files (keep examples)
 .env
 !.env.example
+
+# Coverage & cache
+coverage/
+.eslintcache
+
+# Build artifacts
+*.tgz
+Thumbs.db

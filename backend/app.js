@@ -9,8 +9,19 @@ const equipmentRoutes = require("./routes/equipment_routes");
 const orderRoutes = require("./routes/order_routes");
 const cartRoutes = require("./routes/cart_routes");
 const categoryRoutes = require("./routes/category_routes");
+const healthRoutes = require("./routes/health_routes");
 const { notFoundMiddleware, errorMiddleware } = require("./middleware/errorMiddleware");
 const logger = require("./utils/logger");
+
+function validateEnv() {
+    const required = ["SECRET_KEY", "DB_HOST", "DB_USER", "DB_PASSWORD", "DB_NAME"];
+    const missing = required.filter((key) => !process.env[key]);
+    if (missing.length > 0) {
+        logger.error(`Missing required environment variables: ${missing.join(", ")}`);
+        process.exit(1);
+    }
+}
+validateEnv();
 
 // Initialize Express app
 const app = express();
@@ -53,6 +64,7 @@ app.use(equipmentRoutes);
 app.use(orderRoutes);
 app.use(cartRoutes);
 app.use(categoryRoutes);
+app.use(healthRoutes);
 
 // 404 handler for unmatched routes
 app.use(notFoundMiddleware);
