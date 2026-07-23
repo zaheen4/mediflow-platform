@@ -67,6 +67,13 @@ function validateOrderItems(items) {
     }
 }
 
+function validateOrderStatus(status) {
+    const validStatuses = ["Pending", "Completed", "Cancelled"];
+    if (!status || !validStatuses.includes(status)) {
+        throw new ValidationError(`Status must be one of: ${validStatuses.join(", ")}`);
+    }
+}
+
 module.exports = {
     requireFields,
     validateUsername,
@@ -74,4 +81,5 @@ module.exports = {
     validateEmail,
     validateEquipmentData,
     validateOrderItems,
+    validateOrderStatus,
 };

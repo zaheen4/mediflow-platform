@@ -128,3 +128,74 @@ describe("GET /all-orders (Admin only)", () => {
         expect(res.status).toBe(401);
     });
 });
+
+describe("PUT /orders/:id/status (Admin only)", () => {
+    let orderId;
+
+    beforeAll(async () => {
+        const res = await request(app)
+            .post("/create-order")
+            .set("Authorization", `Bearer ${userToken}`)
+            .send({ items: [{ equipment_id: 2, quantity: 1 }] });
+        orderId = res.body.orderId;
+    });
+
+    it("should update order status by admin", async () => {
+        const res = await request(app)
+            .put(`/orders/${orderId}/status`)
+            .set("Authorization", `Bearer ${adminToken}`)
+            .send({ status: "Completed" });
+
+        expect(res.status).toBe(200);
+
+        const orders = await request(app).get("/all-orders").set("Authorization", `Bearer ${adminToken}`);
+        const order = orders.body.find((o) => o.order_id === orderId);
+        expect(order.status).toBe("Completed");
+    });
+
+    it("should restore stock when cancelled", async () => {
+        const equipBefore = await request(app).get("/equipment/2");
+        const stockBefore = equipBefore.body.quantity;
+
+        await request(app)
+            .put(`/orders/${orderId}/status`)
+            .set("Authorization", `Bearer ${adminToken}`)
+            .send({ status: "Cancelled" });
+
+        const equipAfter = await request(app).get("/equipment/2");
+        expect(Number(equipAfter.body.quantity)).toBe(Number(stockBefore) + 1);
+    });
+
+    it("should reject non-admin user", async () => {
+        const res = await request(app)
+            .put(`/orders/${orderId}/status`)
+            .set("Authorization", `Bearer ${userToken}`)
+            .send({ status: "Completed" });
+
+        expect(res.status).toBe(403);
+    });
+
+    it("should reject unauthenticated request", async () => {
+        const res = await request(app).put(`/orders/${orderId}/status`).send({ status: "Completed" });
+
+        expect(res.status).toBe(401);
+    });
+
+    it("should reject invalid status", async () => {
+        const res = await request(app)
+            .put(`/orders/${orderId}/status`)
+            .set("Authorization", `Bearer ${adminToken}`)
+            .send({ status: "InvalidStatus" });
+
+        expect(res.status).toBe(400);
+    });
+
+    it("should return 404 for non-existent order", async () => {
+        const res = await request(app)
+            .put("/orders/99999/status")
+            .set("Authorization", `Bearer ${adminToken}`)
+            .send({ status: "Completed" });
+
+        expect(res.status).toBe(404);
+    });
+});

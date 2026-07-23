@@ -9,7 +9,7 @@ const {
 const { verifyToken } = require("../utils/auth_utils");
 const { requireAdmin } = require("../middleware/auth");
 const { AppError, NotFoundError, ValidationError } = require("../utils/errors");
-const { validateOrderItems } = require("../utils/validation");
+const { validateOrderItems, validateOrderStatus } = require("../utils/validation");
 const logger = require("../utils/logger");
 
 const router = express.Router();
@@ -135,6 +135,57 @@ router.get("/all-orders", verifyToken, requireAdmin, async (req, res) => {
     }
 
     res.status(200).json(orders);
+});
+
+// Update order status (Admin only)
+router.put("/orders/:id/status", verifyToken, requireAdmin, async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    validateOrderStatus(status);
+
+    const order = await executeQuery("SELECT * FROM orders WHERE order_id = ?", [id]);
+    if (order.length === 0) {
+        throw new NotFoundError("Order not found");
+    }
+
+    if (order[0].status === status) {
+        return res.json({ message: "Order status unchanged" });
+    }
+
+    const previousStatus = order[0].status;
+
+    let connection;
+    try {
+        connection = await beginTransaction();
+
+        await queryWithConnection(connection, "UPDATE orders SET status = ? WHERE order_id = ?", [status, id]);
+
+        // Restore stock when cancelling
+        if (status === "Cancelled" && previousStatus !== "Cancelled") {
+            const items = await queryWithConnection(
+                connection,
+                "SELECT equipment_id, quantity FROM order_items WHERE order_id = ?",
+                [id]
+            );
+            for (const item of items) {
+                await queryWithConnection(
+                    connection,
+                    "UPDATE equipment SET quantity = quantity + ? WHERE equipment_id = ?",
+                    [item.quantity, item.equipment_id]
+                );
+            }
+        }
+
+        await commitTransaction(connection);
+        connection = null;
+
+        logger.info(`Order ${id} status updated from ${previousStatus} to ${status}`);
+        res.json({ message: "Order status updated" });
+    } catch (error) {
+        if (connection) await rollbackTransaction(connection);
+        throw error;
+    }
 });
 
 module.exports = router;
