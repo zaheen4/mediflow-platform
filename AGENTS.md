@@ -42,9 +42,9 @@
 - **Individual servers**: `npm run dev:frontend` or `npm run dev:backend` from root
 - **Frontend**: runs on `http://localhost:5173`
 - **Backend**: runs on `http://localhost:5000`
-- **First-time setup**: `npm run install:all` from root installs all dependencies
+- **First-time setup**: `npm run install:all` from root installs all dependencies (also runs Husky `prepare` hook)
 - **Build check**: Always run `npm run build` in `frontend/` before committing UI changes
-- **Format**: `npm run format` in `frontend/` before committing
+- **Format**: Auto-formatted on commit via Husky + lint-staged (no manual `npm run format` needed)
 - **Port conflicts**: If port 5173 is in use, kill the stale Vite process (`lsof -t -i:5173 | xargs kill`)
 
 ## Architecture Patterns
@@ -71,7 +71,8 @@
 
 ## Git Workflow
 - **Incremental commits** per feature/fix or phase
-- **Commit message style**: `Fix: ...`, `Add: ...`, `Phase X: ...`
+- **Commit messages**: Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, etc.) enforced by commitlint
+- **Pre-commit hooks**: Husky runs lint-staged (ESLint + Prettier on frontend files, Prettier on backend files)
 - **Never push** unless explicitly asked
 - **todo/ folder**: Git-tracked roadmap — do not delete or ignore
 
