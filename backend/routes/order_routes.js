@@ -47,7 +47,7 @@ router.get("/my-orders", verifyToken, async (req, res) => {
 
         for (const order of orders) {
             const items = await executeQuery(
-                `SELECT oi.*, e.name, e.image_url
+                `SELECT oi.*, e.name AS equipment_name, oi.price_at_purchase AS unit_price, e.image_url
                  FROM order_items oi
                  JOIN equipment e ON oi.equipment_id = e.equipment_id
                  WHERE oi.order_id = ?`,
@@ -79,7 +79,7 @@ router.get("/all-orders", verifyToken, async (req, res) => {
 
         for (const order of orders) {
             const items = await executeQuery(
-                `SELECT oi.*, e.name
+                `SELECT oi.*, e.name AS equipment_name, oi.price_at_purchase AS unit_price
                  FROM order_items oi
                  JOIN equipment e ON oi.equipment_id = e.equipment_id
                  WHERE oi.order_id = ?`,
