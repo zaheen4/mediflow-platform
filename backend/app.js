@@ -56,8 +56,12 @@ app.use(notFoundMiddleware);
 // Global error handler (must be last)
 app.use(errorMiddleware);
 
-// Run the Express app
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    logger.info(`Server is running on port ${PORT}`);
-});
+// Run the Express app (only when executed directly, not during tests)
+if (require.main === module) {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        logger.info(`Server is running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
