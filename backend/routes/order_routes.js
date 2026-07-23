@@ -11,6 +11,7 @@ const { requireAdmin } = require("../middleware/auth");
 const { AppError, NotFoundError, ValidationError } = require("../utils/errors");
 const { validateOrderItems, validateOrderStatus } = require("../utils/validation");
 const logger = require("../utils/logger");
+const { logAudit } = require("../utils/audit");
 
 const router = express.Router();
 
@@ -88,6 +89,13 @@ router.post("/create-order", verifyToken, async (req, res) => {
         await commitTransaction(connection);
         connection = null;
         res.status(201).json({ message: "Order created successfully", orderId });
+        logAudit({
+            user_id: req.user.user_id,
+            action: "create_order",
+            entity_type: "order",
+            entity_id: orderId,
+            details: { totalAmount, itemCount: validatedItems.length },
+        });
     } catch (error) {
         if (connection) await rollbackTransaction(connection);
         throw error;
@@ -240,6 +248,13 @@ router.put("/orders/:id/status", verifyToken, requireAdmin, async (req, res) => 
 
         logger.info(`Order ${id} status updated from ${previousStatus} to ${status}`);
         res.json({ message: "Order status updated" });
+        logAudit({
+            user_id: req.user.user_id,
+            action: "update_order_status",
+            entity_type: "order",
+            entity_id: parseInt(id),
+            details: { from: previousStatus, to: status },
+        });
     } catch (error) {
         if (connection) await rollbackTransaction(connection);
         throw error;

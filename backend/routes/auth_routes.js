@@ -4,6 +4,7 @@ const { executeQuery } = require("../utils/db_utils");
 const { generateToken, verifyToken } = require("../utils/auth_utils");
 const { UnauthorizedError, ConflictError, NotFoundError, ValidationError } = require("../utils/errors");
 const { validateUsername, validatePassword, validateEmail } = require("../utils/validation");
+const { logAudit } = require("../utils/audit");
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.post("/register", async (req, res) => {
         const query = "INSERT INTO users (username, password, role, email) VALUES (?, ?, ?, ?)";
         await executeQuery(query, [username, hashedPassword, "User", email]);
         res.status(201).json({ message: "User registered successfully" });
+        logAudit({ action: "register", entity_type: "user", details: { username } });
     } catch (error) {
         if (error.code === "ER_DUP_ENTRY") {
             throw new ConflictError("Username or email already exists");
@@ -50,6 +52,7 @@ router.post("/login", async (req, res) => {
             username: user.username,
             email: user.email,
         });
+        logAudit({ user_id: user.user_id, action: "login", details: { username: user.username } });
     } else {
         throw new UnauthorizedError("Invalid username or password");
     }

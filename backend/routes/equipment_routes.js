@@ -4,6 +4,7 @@ const { verifyToken } = require("../utils/auth_utils");
 const { requireAdmin } = require("../middleware/auth");
 const { NotFoundError } = require("../utils/errors");
 const { validateEquipmentData } = require("../utils/validation");
+const { logAudit } = require("../utils/audit");
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.get("/equipment", async (req, res) => {
     const limitNum = parseInt(limit) || 0;
     const offset = (pageNum - 1) * limitNum;
 
-    const conditions = [];
+    const conditions = ["e.deleted_at IS NULL"];
     const params = [];
     if (search) {
         conditions.push("(e.name LIKE ? OR e.description LIKE ?)");
@@ -29,7 +30,7 @@ router.get("/equipment", async (req, res) => {
         params.push(category);
     }
 
-    const whereClause = conditions.length > 0 ? " WHERE " + conditions.join(" AND ") : "";
+    const whereClause = " WHERE " + conditions.join(" AND ");
     const baseQuery = `FROM equipment e${equipmentJoin}${whereClause}`;
     const orderClause = " ORDER BY e.equipment_id";
 
@@ -64,7 +65,7 @@ router.get("/equipment", async (req, res) => {
 router.get("/equipment/:equipment_id", async (req, res) => {
     const { equipment_id } = req.params;
     const equipment = await executeQuery(
-        `SELECT ${equipmentSelect} FROM equipment e ${equipmentJoin} WHERE e.equipment_id = ?`,
+        `SELECT ${equipmentSelect} FROM equipment e ${equipmentJoin} WHERE e.equipment_id = ? AND e.deleted_at IS NULL`,
         [equipment_id]
     );
     if (equipment.length > 0) {
@@ -82,7 +83,7 @@ router.post("/add-equipment", verifyToken, requireAdmin, async (req, res) => {
 
     const query =
         "INSERT INTO equipment (name, description, price, quantity, image_url, category_id) VALUES (?, ?, ?, ?, ?, ?)";
-    await executeQuery(query, [
+    const result = await executeQuery(query, [
         name,
         description,
         parseFloat(price),
@@ -91,6 +92,13 @@ router.post("/add-equipment", verifyToken, requireAdmin, async (req, res) => {
         category_id || null,
     ]);
     res.status(201).json({ message: "Equipment added successfully" });
+    logAudit({
+        user_id: req.user.user_id,
+        action: "add_equipment",
+        entity_type: "equipment",
+        entity_id: result.insertId,
+        details: { name },
+    });
 });
 
 // Modify equipment (Admin only)
@@ -112,14 +120,27 @@ router.put("/modify-equipment/:equipment_id", verifyToken, requireAdmin, async (
         equipment_id,
     ]);
     res.status(200).json({ message: "Equipment modified successfully" });
+    logAudit({
+        user_id: req.user.user_id,
+        action: "modify_equipment",
+        entity_type: "equipment",
+        entity_id: parseInt(equipment_id),
+        details: { name },
+    });
 });
 
-// Delete equipment (Admin only)
+// Soft-delete equipment (Admin only)
 router.delete("/delete-equipment/:equipment_id", verifyToken, requireAdmin, async (req, res) => {
     const { equipment_id } = req.params;
-    const query = "DELETE FROM equipment WHERE equipment_id = ?";
+    const query = "UPDATE equipment SET deleted_at = NOW() WHERE equipment_id = ?";
     await executeQuery(query, [equipment_id]);
     res.status(200).json({ message: "Equipment deleted successfully" });
+    logAudit({
+        user_id: req.user.user_id,
+        action: "delete_equipment",
+        entity_type: "equipment",
+        entity_id: parseInt(equipment_id),
+    });
 });
 
 module.exports = router;
