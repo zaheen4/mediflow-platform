@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const { executeQuery } = require("../utils/db_utils");
 const { generateToken, verifyToken } = require("../utils/auth_utils");
-const { UnauthorizedError, ConflictError, NotFoundError } = require("../utils/errors");
+const { UnauthorizedError, ConflictError, NotFoundError, ValidationError } = require("../utils/errors");
 const { validateUsername, validatePassword, validateEmail } = require("../utils/validation");
 
 const router = express.Router();
@@ -48,6 +48,7 @@ router.post("/login", async (req, res) => {
             token: token,
             role: user.role,
             username: user.username,
+            email: user.email,
         });
     } else {
         throw new UnauthorizedError("Invalid username or password");
@@ -77,6 +78,52 @@ router.put("/change-password", verifyToken, async (req, res) => {
     await executeQuery("UPDATE users SET password = ? WHERE user_id = ?", [hashedPassword, req.user.user_id]);
 
     res.status(200).json({ message: "Password changed successfully" });
+});
+
+// Get current user profile
+router.get("/users/me", verifyToken, async (req, res) => {
+    const users = await executeQuery("SELECT user_id, username, email, role FROM users WHERE user_id = ?", [
+        req.user.user_id,
+    ]);
+    if (users.length === 0) {
+        throw new NotFoundError("User not found");
+    }
+    res.json(users[0]);
+});
+
+// Update current user profile (username, email)
+router.put("/users/me", verifyToken, async (req, res) => {
+    const { username, email } = req.body;
+
+    if (!username && !email) {
+        throw new ValidationError("Nothing to update");
+    }
+
+    const current = await executeQuery("SELECT username, email FROM users WHERE user_id = ?", [req.user.user_id]);
+    if (current.length === 0) {
+        throw new NotFoundError("User not found");
+    }
+
+    const newUsername = username !== undefined ? username : current[0].username;
+    const newEmail = email !== undefined ? email : current[0].email;
+
+    validateUsername(newUsername);
+    validateEmail(newEmail);
+
+    try {
+        await executeQuery("UPDATE users SET username = ?, email = ? WHERE user_id = ?", [
+            newUsername,
+            newEmail,
+            req.user.user_id,
+        ]);
+    } catch (error) {
+        if (error.code === "ER_DUP_ENTRY") {
+            throw new ConflictError("Username or email already exists");
+        }
+        throw error;
+    }
+
+    res.json({ message: "Profile updated", username: newUsername, email: newEmail });
 });
 
 module.exports = router;

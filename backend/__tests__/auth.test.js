@@ -181,3 +181,100 @@ describe("PUT /change-password", () => {
         expect(res.status).toBe(401);
     });
 });
+
+describe("GET /users/me", () => {
+    let profileToken;
+
+    beforeAll(async () => {
+        await request(app).post("/register").send({
+            username: "profileuser",
+            password: "password123",
+            email: "profile@test.com",
+        });
+
+        const loginRes = await request(app).post("/login").send({
+            username: "profileuser",
+            password: "password123",
+        });
+        profileToken = loginRes.body.token;
+    });
+
+    it("should return current user profile", async () => {
+        const res = await request(app).get("/users/me").set("Authorization", `Bearer ${profileToken}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.username).toBe("profileuser");
+        expect(res.body.email).toBe("profile@test.com");
+        expect(res.body.role).toBe("User");
+        expect(res.body.user_id).toBeDefined();
+    });
+
+    it("should reject unauthenticated request", async () => {
+        const res = await request(app).get("/users/me");
+        expect(res.status).toBe(401);
+    });
+});
+
+describe("PUT /users/me", () => {
+    let editToken;
+
+    beforeAll(async () => {
+        await request(app).post("/register").send({
+            username: "edituser",
+            password: "password123",
+            email: "edit@test.com",
+        });
+
+        const loginRes = await request(app).post("/login").send({
+            username: "edituser",
+            password: "password123",
+        });
+        editToken = loginRes.body.token;
+    });
+
+    it("should update username and email", async () => {
+        const res = await request(app)
+            .put("/users/me")
+            .set("Authorization", `Bearer ${editToken}`)
+            .send({ username: "updateduser", email: "updated@test.com" });
+
+        expect(res.status).toBe(200);
+        expect(res.body.username).toBe("updateduser");
+        expect(res.body.email).toBe("updated@test.com");
+    });
+
+    it("should reject duplicate username", async () => {
+        await request(app).post("/register").send({
+            username: "existinguser",
+            password: "password123",
+            email: "existing@test.com",
+        });
+
+        const res = await request(app)
+            .put("/users/me")
+            .set("Authorization", `Bearer ${editToken}`)
+            .send({ username: "existinguser", email: "updated@test.com" });
+
+        expect(res.status).toBe(409);
+    });
+
+    it("should reject invalid email", async () => {
+        const res = await request(app)
+            .put("/users/me")
+            .set("Authorization", `Bearer ${editToken}`)
+            .send({ username: "validuser", email: "not-an-email" });
+
+        expect(res.status).toBe(400);
+    });
+
+    it("should reject no fields", async () => {
+        const res = await request(app).put("/users/me").set("Authorization", `Bearer ${editToken}`).send({});
+
+        expect(res.status).toBe(400);
+    });
+
+    it("should reject unauthenticated request", async () => {
+        const res = await request(app).put("/users/me").send({ username: "hacker" });
+        expect(res.status).toBe(401);
+    });
+});
