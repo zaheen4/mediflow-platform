@@ -13,8 +13,16 @@ const Shop = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [search, setSearch] = useState("");
     const [searchInput, setSearchInput] = useState("");
+    const [categoryFilter, setCategoryFilter] = useState("");
+    const [categories, setCategories] = useState([]);
     const { addToCart, getTotalItems } = useContext(CartContext);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        api.get("/categories")
+            .then((res) => setCategories(res.data))
+            .catch(() => {});
+    }, []);
 
     useEffect(() => {
         const fetchEquipment = async () => {
@@ -22,6 +30,7 @@ const Shop = () => {
             try {
                 const params = { page, limit: 12 };
                 if (search) params.search = search;
+                if (categoryFilter) params.category = categoryFilter;
                 const res = await api.get("/equipment", { params });
                 const body = res.data;
                 if (Array.isArray(body)) {
@@ -40,11 +49,10 @@ const Shop = () => {
         };
 
         fetchEquipment();
-    }, [page, search]);
+    }, [page, search, categoryFilter]);
 
     const handleSearch = (e) => {
         e.preventDefault();
-        setSearchInput("");
         setSearch(searchInput);
         setPage(1);
     };
@@ -52,6 +60,7 @@ const Shop = () => {
     const handleClear = () => {
         setSearchInput("");
         setSearch("");
+        setCategoryFilter("");
         setPage(1);
     };
 
@@ -87,7 +96,7 @@ const Shop = () => {
         <div className="justify-center flex mx-36 py-10">
             <div className="w-[90%]">
                 <form onSubmit={handleSearch} className="flex gap-2 mb-6">
-                    <div className="join flex-1">
+                    <div className="join flex-[2]">
                         <input
                             type="text"
                             value={searchInput}
@@ -98,12 +107,27 @@ const Shop = () => {
                         <button type="submit" className="btn btn-primary join-item">
                             <FaSearch />
                         </button>
-                        {search && (
-                            <button type="button" onClick={handleClear} className="btn btn-ghost join-item">
-                                Clear
-                            </button>
-                        )}
                     </div>
+                    <select
+                        value={categoryFilter}
+                        onChange={(e) => {
+                            setCategoryFilter(e.target.value);
+                            setPage(1);
+                        }}
+                        className="select select-bordered flex-1"
+                    >
+                        <option value="">All Categories</option>
+                        {categories.map((c) => (
+                            <option key={c.category_id} value={c.category_id}>
+                                {c.name}
+                            </option>
+                        ))}
+                    </select>
+                    {(search || categoryFilter) && (
+                        <button type="button" onClick={handleClear} className="btn btn-ghost">
+                            Clear
+                        </button>
+                    )}
                 </form>
 
                 {equipment.length === 0 ? (

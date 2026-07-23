@@ -1,18 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "../../services/api";
-import { FaEdit, FaTrash, FaPlus, FaBox, FaClipboardList } from "react-icons/fa";
+import { FaEdit, FaTrash, FaPlus, FaBox, FaClipboardList, FaTags } from "react-icons/fa";
 import { toast } from "sonner";
 
 const AdminPage = () => {
     const [tab, setTab] = useState("equipment");
     const [equipment, setEquipment] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [editing, setEditing] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(null);
     const [adding, setAdding] = useState(false);
     const [updatingStatus, setUpdatingStatus] = useState(null);
+    const [catEdit, setCatEdit] = useState(null);
+    const [catSaving, setCatSaving] = useState(false);
+    const [newCatName, setNewCatName] = useState("");
+    const [newCatDesc, setNewCatDesc] = useState("");
 
     const [newEquipment, setNewEquipment] = useState({
         name: "",
@@ -20,6 +25,7 @@ const AdminPage = () => {
         price: "",
         quantity: "",
         image_url: "",
+        category_id: "",
     });
 
     const fetchEquipment = useCallback(async () => {
@@ -46,13 +52,25 @@ const AdminPage = () => {
         }
     }, []);
 
+    const fetchCategories = useCallback(async () => {
+        try {
+            const response = await api.get("/categories");
+            setCategories(response.data);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    }, []);
+
     useEffect(() => {
         if (tab === "equipment") {
             fetchEquipment();
-        } else {
+        } else if (tab === "orders") {
             fetchOrders();
+        } else {
+            fetchCategories();
         }
-    }, [tab, fetchEquipment, fetchOrders]);
+        fetchCategories();
+    }, [tab, fetchEquipment, fetchOrders, fetchCategories]);
 
     const handleEdit = (equip) => {
         setEditing(equip);
@@ -116,8 +134,10 @@ const AdminPage = () => {
 
         setAdding(true);
         try {
-            await api.post("/add-equipment", newEquipment);
-            setNewEquipment({ name: "", description: "", price: "", quantity: "", image_url: "" });
+            const payload = { ...newEquipment };
+            if (!payload.category_id) delete payload.category_id;
+            await api.post("/add-equipment", payload);
+            setNewEquipment({ name: "", description: "", price: "", quantity: "", image_url: "", category_id: "" });
             fetchEquipment();
             toast.success("Equipment added successfully");
         } catch (error) {
@@ -167,6 +187,12 @@ const AdminPage = () => {
                 >
                     <FaClipboardList className="mr-1" /> Orders
                 </button>
+                <button
+                    className={`btn ${tab === "categories" ? "btn-primary" : "btn-ghost"}`}
+                    onClick={() => setTab("categories")}
+                >
+                    <FaTags className="mr-1" /> Categories
+                </button>
             </div>
 
             {tab === "equipment" ? (
@@ -180,12 +206,13 @@ const AdminPage = () => {
                             <thead>
                                 <tr className="bg-gray-300 border border-gray-300 ">
                                     <th className="p-2 w-[5%]">ID</th>
-                                    <th className="p-2 w-[20%]">Name</th>
-                                    <th className="p-2 w-[35%]">Description</th>
-                                    <th className="p-2 w-[10%]">Price (BDT)</th>
-                                    <th className="p-2 w-[10%]">Quantity</th>
-                                    <th className="p-2 w-[10%]">ImageURL</th>
-                                    <th className="p-2 w-[10%]">Actions</th>
+                                    <th className="p-2 w-[18%]">Name</th>
+                                    <th className="p-2 w-[27%]">Description</th>
+                                    <th className="p-2 w-[8%]">Price (BDT)</th>
+                                    <th className="p-2 w-[8%]">Qty</th>
+                                    <th className="p-2 w-[10%]">Category</th>
+                                    <th className="p-2 w-[8%]">Image</th>
+                                    <th className="p-2 w-[8%]">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -244,7 +271,34 @@ const AdminPage = () => {
                                                 equip.quantity
                                             )}
                                         </td>
-                                        <td className="p-2 ">
+                                        <td className="p-2">
+                                            {editing?.equipment_id === equip.equipment_id ? (
+                                                <select
+                                                    value={editing.category_id || ""}
+                                                    onChange={(e) =>
+                                                        setEditing({
+                                                            ...editing,
+                                                            category_id: e.target.value
+                                                                ? parseInt(e.target.value)
+                                                                : null,
+                                                        })
+                                                    }
+                                                    className="border rounded p-1 w-full"
+                                                >
+                                                    <option value="">None</option>
+                                                    {categories.map((c) => (
+                                                        <option key={c.category_id} value={c.category_id}>
+                                                            {c.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            ) : (
+                                                <span className="badge badge-ghost badge-sm">
+                                                    {equip.category_name || "—"}
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="p-2">
                                             {editing?.equipment_id === equip.equipment_id ? (
                                                 <input
                                                     type="text"
@@ -341,6 +395,22 @@ const AdminPage = () => {
                                             placeholder="Quantity"
                                             className="border rounded p-1 w-full"
                                         />
+                                    </td>
+                                    <td className="p-2">
+                                        <select
+                                            value={newEquipment.category_id}
+                                            onChange={(e) =>
+                                                setNewEquipment({ ...newEquipment, category_id: e.target.value })
+                                            }
+                                            className="border rounded p-1 w-full"
+                                        >
+                                            <option value="">None</option>
+                                            {categories.map((c) => (
+                                                <option key={c.category_id} value={c.category_id}>
+                                                    {c.name}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </td>
                                     <td className="p-2">
                                         <input
@@ -458,6 +528,147 @@ const AdminPage = () => {
                             </tbody>
                         </table>
                     )}
+                </div>
+            )}
+
+            {tab === "categories" && (
+                <div className="mx-auto flex justify-center">
+                    <div className="w-[85%]">
+                        <div className="flex gap-2 mb-4">
+                            <input
+                                type="text"
+                                value={newCatName}
+                                onChange={(e) => setNewCatName(e.target.value)}
+                                placeholder="New category name"
+                                className="input input-bordered input-sm flex-1"
+                            />
+                            <input
+                                type="text"
+                                value={newCatDesc}
+                                onChange={(e) => setNewCatDesc(e.target.value)}
+                                placeholder="Description (optional)"
+                                className="input input-bordered input-sm flex-1"
+                            />
+                            <button
+                                className="btn btn-primary btn-sm"
+                                disabled={!newCatName.trim() || catSaving}
+                                onClick={async () => {
+                                    setCatSaving(true);
+                                    try {
+                                        await api.post("/categories", { name: newCatName, description: newCatDesc });
+                                        setNewCatName("");
+                                        setNewCatDesc("");
+                                        fetchCategories();
+                                        toast.success("Category created");
+                                    } catch {
+                                        toast.error("Failed to create category");
+                                    } finally {
+                                        setCatSaving(false);
+                                    }
+                                }}
+                            >
+                                {catSaving ? <span className="loading loading-spinner loading-xs"></span> : <FaPlus />}
+                            </button>
+                        </div>
+
+                        {categories.length === 0 ? (
+                            <div className="p-8 text-center text-gray-500">No categories yet.</div>
+                        ) : (
+                            <table className="table-auto w-full border-collapse bg-white">
+                                <thead>
+                                    <tr className="bg-gray-300 border border-gray-300">
+                                        <th className="p-2 w-[10%]">ID</th>
+                                        <th className="p-2 w-[30%]">Name</th>
+                                        <th className="p-2 w-[45%]">Description</th>
+                                        <th className="p-2 w-[15%]">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {categories.map((cat) => (
+                                        <tr key={cat.category_id} className="border-b border-gray-300">
+                                            <td className="p-2 text-center">{cat.category_id}</td>
+                                            <td className="p-2">
+                                                {catEdit?.category_id === cat.category_id ? (
+                                                    <input
+                                                        type="text"
+                                                        value={catEdit.name}
+                                                        onChange={(e) =>
+                                                            setCatEdit({ ...catEdit, name: e.target.value })
+                                                        }
+                                                        className="border rounded p-1 w-full"
+                                                    />
+                                                ) : (
+                                                    cat.name
+                                                )}
+                                            </td>
+                                            <td className="p-2">
+                                                {catEdit?.category_id === cat.category_id ? (
+                                                    <input
+                                                        type="text"
+                                                        value={catEdit.description || ""}
+                                                        onChange={(e) =>
+                                                            setCatEdit({ ...catEdit, description: e.target.value })
+                                                        }
+                                                        className="border rounded p-1 w-full"
+                                                    />
+                                                ) : (
+                                                    cat.description || "—"
+                                                )}
+                                            </td>
+                                            <td className="p-2 flex justify-center gap-2">
+                                                {catEdit?.category_id === cat.category_id ? (
+                                                    <button
+                                                        className="btn btn-success btn-xs"
+                                                        disabled={catSaving}
+                                                        onClick={async () => {
+                                                            setCatSaving(true);
+                                                            try {
+                                                                await api.put(`/categories/${cat.category_id}`, {
+                                                                    name: catEdit.name,
+                                                                    description: catEdit.description,
+                                                                });
+                                                                setCatEdit(null);
+                                                                fetchCategories();
+                                                                toast.success("Category updated");
+                                                            } catch {
+                                                                toast.error("Failed to update category");
+                                                            } finally {
+                                                                setCatSaving(false);
+                                                            }
+                                                        }}
+                                                    >
+                                                        Save
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        className="btn btn-warning btn-xs"
+                                                        onClick={() => setCatEdit(cat)}
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                )}
+                                                <button
+                                                    className="btn btn-error btn-xs"
+                                                    onClick={async () => {
+                                                        if (!window.confirm(`Delete "${cat.name}"?`)) return;
+                                                        try {
+                                                            await api.delete(`/categories/${cat.category_id}`);
+                                                            fetchCategories();
+                                                            toast.success("Category deleted");
+                                                        } catch {
+                                                            toast.error("Failed to delete category");
+                                                        }
+                                                    }}
+                                                >
+                                                    <FaTrash />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
                 </div>
             )}
         </div>

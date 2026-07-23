@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth_routes");
 const equipmentRoutes = require("./routes/equipment_routes");
 const orderRoutes = require("./routes/order_routes");
 const cartRoutes = require("./routes/cart_routes");
+const categoryRoutes = require("./routes/category_routes");
 const { notFoundMiddleware, errorMiddleware } = require("./middleware/errorMiddleware");
 const logger = require("./utils/logger");
 
@@ -51,6 +52,7 @@ app.use(authRoutes);
 app.use(equipmentRoutes);
 app.use(orderRoutes);
 app.use(cartRoutes);
+app.use(categoryRoutes);
 
 // 404 handler for unmatched routes
 app.use(notFoundMiddleware);

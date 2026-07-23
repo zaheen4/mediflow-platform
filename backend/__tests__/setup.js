@@ -74,15 +74,22 @@ async function clearTables() {
              TRUNCATE TABLE order_items;
              TRUNCATE TABLE orders;
              TRUNCATE TABLE equipment;
+             TRUNCATE TABLE categories;
              TRUNCATE TABLE users;
+             TRUNCATE TABLE orders;
+             TRUNCATE TABLE order_items;
              SET FOREIGN_KEY_CHECKS = 1;
-             INSERT INTO equipment (equipment_id, name, description, price, quantity, image_url)
+             INSERT INTO categories (category_id, name, description)
              VALUES
-               (1, 'PPE Kit', 'Disposable PPE Coverall', 109.72, 3400, 'http://example.com/ppe.jpg'),
-               (2, 'X-Ray Machine', 'Medical X-Ray System', 1218972.10, 1, 'http://example.com/xray.jpg'),
-               (3, 'Surgical Kit', 'Basic Surgical Instrument Set', 242599.94, 5, 'http://example.com/surgical.jpg'),
-               (4, 'Blood Analyzer', 'Auto 5 Part Hematology Analyzer', 60954.60, 1, 'http://example.com/blood.jpg'),
-               (5, 'Patient Monitor', 'Multi-Parameter Monitor', 19505.48, 1, 'http://example.com/monitor.jpg');`,
+               (1, 'Protective Equipment', 'PPE'),
+               (2, 'Diagnostic Equipment', 'Diagnostics');
+             INSERT INTO equipment (equipment_id, name, description, price, quantity, image_url, category_id)
+             VALUES
+               (1, 'PPE Kit', 'Disposable PPE Coverall', 109.72, 3400, 'http://example.com/ppe.jpg', 1),
+               (2, 'X-Ray Machine', 'Medical X-Ray System', 1218972.10, 1, 'http://example.com/xray.jpg', 2),
+               (3, 'Surgical Kit', 'Basic Surgical Instrument Set', 242599.94, 5, 'http://example.com/surgical.jpg', NULL),
+               (4, 'Blood Analyzer', 'Auto 5 Part Hematology Analyzer', 60954.60, 1, 'http://example.com/blood.jpg', NULL),
+               (5, 'Patient Monitor', 'Multi-Parameter Monitor', 19505.48, 1, 'http://example.com/monitor.jpg', NULL);`,
             (err) => {
                 if (err) return reject(err);
                 resolve();
