@@ -1,6 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
 const { clearTables } = require("./setup");
+const pool = require("../db_connection");
 
 beforeAll(async () => {
     await clearTables();
@@ -8,6 +9,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await clearTables();
+    await pool.end();
 });
 
 describe("POST /register", () => {

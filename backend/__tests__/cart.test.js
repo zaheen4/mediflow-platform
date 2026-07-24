@@ -2,6 +2,7 @@ const request = require("supertest");
 const app = require("../app");
 const { clearTables } = require("./setup");
 const { executeQuery } = require("../utils/db_utils");
+const pool = require("../db_connection");
 
 let agent;
 let token;
@@ -25,6 +26,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await clearTables();
+    await pool.end();
 });
 
 describe("Cart API", () => {

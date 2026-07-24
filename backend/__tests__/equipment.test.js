@@ -1,6 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
 const { clearTables, promoteAdmin } = require("./setup");
+const pool = require("../db_connection");
 
 let adminToken;
 let userToken;
@@ -37,6 +38,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await clearTables();
+    await pool.end();
 });
 
 describe("GET /equipment", () => {

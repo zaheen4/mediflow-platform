@@ -26,6 +26,7 @@ const sampleItem = {
     equipment_id: 1,
     name: "Test Item",
     price: 100,
+    quantity: 1,
     description: "A test item",
 };
 
@@ -33,6 +34,7 @@ const sampleItem2 = {
     equipment_id: 2,
     name: "Test Item 2",
     price: 50,
+    quantity: 1,
     description: "Another test item",
 };
 
@@ -93,10 +95,12 @@ describe("CartContext — localStorage (guest mode)", () => {
         expect(screen.getByTestId("synced").textContent).toBe("false");
     });
 
-    it("loads cart from localStorage on mount", () => {
+    it("loads cart from localStorage on mount", async () => {
         localStorage.setItem("cart", JSON.stringify([sampleItem]));
         renderWithAuth(null);
-        expect(screen.getByTestId("count").textContent).toBe("1");
+        await waitFor(() => {
+            expect(screen.getByTestId("count").textContent).toBe("1");
+        });
     });
 
     it("addToCart adds new item", () => {
