@@ -1,42 +1,20 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaTrash, FaPlus, FaMinus, FaShoppingCart } from "react-icons/fa";
 import { CartContext } from "../../context/CartContext";
-import api from "../../services/api";
 import { toast } from "sonner";
 import bdt_icon2 from "../../assets/bdt_icon2.svg";
 
 const Cart = () => {
-    const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
     const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice, getTotalItems } = useContext(CartContext);
 
-    const handleCheckout = async () => {
+    const handleCheckout = () => {
         if (cart.length === 0) {
             toast.warning("Your cart is empty!");
             return;
         }
-
-        setSubmitting(true);
-        try {
-            const orderData = {
-                items: cart.map((item) => ({
-                    equipment_id: item.equipment_id,
-                    quantity: item.quantity,
-                })),
-            };
-
-            const response = await api.post("/create-order", orderData);
-
-            await clearCart();
-            toast.success(`Order placed successfully! Order ID: ${response.data.orderId}`);
-            navigate("/");
-        } catch (error) {
-            console.error("Checkout error:", error);
-            toast.error(error.response?.data?.message || "Failed to place order. Please try again.");
-        } finally {
-            setSubmitting(false);
-        }
+        navigate("/checkout");
     };
 
     const handleQuantityChange = (id, delta) => {
@@ -139,16 +117,8 @@ const Cart = () => {
                                     <span>BDT {getTotalPrice().toFixed(2)}</span>
                                 </div>
                             </div>
-                            <button
-                                className="btn btn-error btn-lg w-full mt-6"
-                                onClick={handleCheckout}
-                                disabled={submitting}
-                            >
-                                {submitting ? (
-                                    <span className="loading loading-spinner loading-sm"></span>
-                                ) : (
-                                    "Proceed to Checkout"
-                                )}
+                            <button className="btn btn-error btn-lg w-full mt-6" onClick={handleCheckout}>
+                                Proceed to Checkout
                             </button>
                             <button
                                 className="btn btn-ghost btn-sm w-full mt-2 text-base-content/60 hover:text-error"

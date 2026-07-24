@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../services/api";
+import { toast } from "sonner";
 import { SkeletonOrderCard } from "../../components/Skeleton";
 
 const OrderHistory = () => {
@@ -7,6 +8,7 @@ const OrderHistory = () => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [cancelling, setCancelling] = useState(null);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -40,6 +42,20 @@ const OrderHistory = () => {
         );
     }
 
+    const handleCancel = async (orderId) => {
+        if (!window.confirm("Are you sure you want to cancel this order?")) return;
+        setCancelling(orderId);
+        try {
+            await api.put(`/orders/${orderId}/cancel`);
+            setOrders((prev) => prev.map((o) => (o.order_id === orderId ? { ...o, status: "Cancelled" } : o)));
+            toast.success("Order cancelled successfully");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to cancel order");
+        } finally {
+            setCancelling(null);
+        }
+    };
+
     if (orders.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -63,9 +79,37 @@ const OrderHistory = () => {
                                         {new Date(order.created_at).toLocaleDateString()}
                                     </p>
                                 </div>
-                                <span className="badge badge-primary badge-lg">
-                                    BDT {parseFloat(order.total_amount).toFixed(2)}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                    <span
+                                        className={`badge badge-lg ${
+                                            order.status === "Completed"
+                                                ? "badge-success"
+                                                : order.status === "Cancelled"
+                                                  ? "badge-error"
+                                                  : "badge-warning"
+                                        }`}
+                                    >
+                                        {order.status}
+                                    </span>
+                                    <span className="badge badge-primary badge-lg">
+                                        BDT {parseFloat(order.total_amount).toFixed(2)}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                                {order.status === "Pending" && (
+                                    <button
+                                        className="btn btn-outline btn-error btn-xs"
+                                        onClick={() => handleCancel(order.order_id)}
+                                        disabled={cancelling === order.order_id}
+                                    >
+                                        {cancelling === order.order_id ? (
+                                            <span className="loading loading-spinner loading-xs"></span>
+                                        ) : (
+                                            "Cancel Order"
+                                        )}
+                                    </button>
+                                )}
                             </div>
                             <div className="divider my-2"></div>
                             <div className="overflow-x-auto">
