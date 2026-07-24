@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-"test": "vitest run",
+    "test": "vitest run",
     "format": "prettier --write \"src/**/*.{js,jsx,css}\"",
     "preview": "vite preview"
   },

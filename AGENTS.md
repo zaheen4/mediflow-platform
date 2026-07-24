@@ -45,7 +45,7 @@ Medical equipment e-commerce. Monorepo: `frontend/` (React/Vite, ESM) + `backend
 
 - `react-refresh` warns on `CartContext.jsx` exports — **expected, accepted**
 - DaisyUI CSS minification `Unexpected ")"` — **harmless**
-- `sweetalert2` installed but **not used** — use Sonner
+- `sweetalert2` removed — use Sonner for notifications
 - `prop-types` in deps but **not used** — ESLint `react/prop-types` is off
 - Port 5173 conflict: `lsof -t -i:5173 | xargs kill`
 - `.env` files in `.gitignore` — use `.env.example` as template

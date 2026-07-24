@@ -79,7 +79,7 @@ const AdminPage = () => {
             setStats(response.data);
         } catch (error) {
             console.error("Error fetching stats:", error);
-            toast.error("Failed to load dashboard stats.");
+            toast.error(error.response?.data?.error || error.message || "Failed to load dashboard stats");
         }
     }, []);
 
