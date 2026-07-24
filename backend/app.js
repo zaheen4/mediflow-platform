@@ -10,6 +10,7 @@ const orderRoutes = require("./routes/order_routes");
 const cartRoutes = require("./routes/cart_routes");
 const categoryRoutes = require("./routes/category_routes");
 const healthRoutes = require("./routes/health_routes");
+const adminRoutes = require("./routes/admin_routes");
 const { specs, swaggerUi } = require("./utils/swagger");
 const { notFoundMiddleware, errorMiddleware } = require("./middleware/errorMiddleware");
 const logger = require("./utils/logger");
@@ -66,6 +67,7 @@ app.use(orderRoutes);
 app.use(cartRoutes);
 app.use(categoryRoutes);
 app.use(healthRoutes);
+app.use(adminRoutes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // 404 handler for unmatched routes

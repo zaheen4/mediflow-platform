@@ -1,13 +1,25 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "../../services/api";
-import { FaEdit, FaTrash, FaPlus, FaBox, FaClipboardList, FaTags } from "react-icons/fa";
+import {
+    FaEdit,
+    FaTrash,
+    FaPlus,
+    FaBox,
+    FaClipboardList,
+    FaTags,
+    FaChartBar,
+    FaUsers,
+    FaDollarSign,
+    FaExclamationTriangle,
+} from "react-icons/fa";
 import { toast } from "sonner";
 
 const AdminPage = () => {
-    const [tab, setTab] = useState("equipment");
+    const [tab, setTab] = useState("overview");
     const [equipment, setEquipment] = useState([]);
     const [orders, setOrders] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [stats, setStats] = useState(null);
     const [editing, setEditing] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -61,8 +73,21 @@ const AdminPage = () => {
         }
     }, []);
 
+    const fetchStats = useCallback(async () => {
+        try {
+            const response = await api.get("/admin/stats");
+            setStats(response.data);
+        } catch (error) {
+            console.error("Error fetching stats:", error);
+            toast.error("Failed to load dashboard stats.");
+        }
+    }, []);
+
     useEffect(() => {
-        if (tab === "equipment") {
+        if (tab === "overview") {
+            setLoading(false);
+            fetchStats();
+        } else if (tab === "equipment") {
             fetchEquipment();
         } else if (tab === "orders") {
             fetchOrders();
@@ -70,7 +95,7 @@ const AdminPage = () => {
             fetchCategories();
         }
         fetchCategories();
-    }, [tab, fetchEquipment, fetchOrders, fetchCategories]);
+    }, [tab, fetchEquipment, fetchOrders, fetchCategories, fetchStats]);
 
     const handleEdit = (equip) => {
         setEditing(equip);
@@ -176,6 +201,14 @@ const AdminPage = () => {
 
             <div className="flex gap-4 mb-6 ml-28" role="tablist">
                 <button
+                    className={`btn ${tab === "overview" ? "btn-primary" : "btn-ghost"}`}
+                    onClick={() => setTab("overview")}
+                    role="tab"
+                    aria-selected={tab === "overview"}
+                >
+                    <FaChartBar className="mr-1" /> Overview
+                </button>
+                <button
                     className={`btn ${tab === "equipment" ? "btn-primary" : "btn-ghost"}`}
                     onClick={() => setTab("equipment")}
                     role="tab"
@@ -196,6 +229,131 @@ const AdminPage = () => {
                     <FaTags className="mr-1" /> Categories
                 </button>
             </div>
+
+            {tab === "overview" && (
+                <div className="mx-auto flex justify-center">
+                    <div className="w-[90%] space-y-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                            <div className="stat bg-base-100 border border-base-300 rounded-lg shadow-sm">
+                                <div className="stat-figure text-error">
+                                    <FaDollarSign className="text-2xl" />
+                                </div>
+                                <div className="stat-title">Revenue</div>
+                                <div className="stat-value text-2xl">
+                                    {stats ? `BDT ${Number(stats.revenue).toLocaleString()}` : "—"}
+                                </div>
+                                <div className="stat-desc">From completed orders</div>
+                            </div>
+                            <div className="stat bg-base-100 border border-base-300 rounded-lg shadow-sm">
+                                <div className="stat-figure text-error">
+                                    <FaClipboardList className="text-2xl" />
+                                </div>
+                                <div className="stat-title">Orders</div>
+                                <div className="stat-value text-2xl">{stats ? stats.orders : "—"}</div>
+                                <div className="stat-desc">{stats ? `${stats.pendingOrders} pending` : ""}</div>
+                            </div>
+                            <div className="stat bg-base-100 border border-base-300 rounded-lg shadow-sm">
+                                <div className="stat-figure text-error">
+                                    <FaUsers className="text-2xl" />
+                                </div>
+                                <div className="stat-title">Users</div>
+                                <div className="stat-value text-2xl">{stats ? stats.users : "—"}</div>
+                                <div className="stat-desc">Registered accounts</div>
+                            </div>
+                            <div className="stat bg-base-100 border border-base-300 rounded-lg shadow-sm">
+                                <div className="stat-figure text-error">
+                                    <FaBox className="text-2xl" />
+                                </div>
+                                <div className="stat-title">Equipment</div>
+                                <div className="stat-value text-2xl">{stats ? stats.equipment : "—"}</div>
+                                <div className="stat-desc">Active items</div>
+                            </div>
+                            <div className="stat bg-base-100 border border-base-300 rounded-lg shadow-sm">
+                                <div className="stat-figure text-error">
+                                    <FaExclamationTriangle className="text-2xl" />
+                                </div>
+                                <div className="stat-title">Low Stock</div>
+                                <div className="stat-value text-2xl">{stats ? stats.lowStock : "—"}</div>
+                                <div className="stat-desc">Items &le; 5 in stock</div>
+                            </div>
+                        </div>
+
+                        {stats?.monthlyRevenue && stats.monthlyRevenue.length > 0 && (
+                            <div className="card bg-base-100 border border-base-300 shadow-sm">
+                                <div className="card-body">
+                                    <h3 className="card-title text-lg">Monthly Revenue (Last 6 Months)</h3>
+                                    <div className="flex items-end gap-3 h-32 mt-4">
+                                        {stats.monthlyRevenue.map((m) => {
+                                            const maxRevenue = Math.max(
+                                                ...stats.monthlyRevenue.map((r) => Number(r.total))
+                                            );
+                                            const height = maxRevenue > 0 ? (Number(m.total) / maxRevenue) * 100 : 0;
+                                            return (
+                                                <div key={m.month} className="flex flex-col items-center flex-1">
+                                                    <span className="text-xs font-medium mb-1">
+                                                        BDT {Number(m.total).toLocaleString()}
+                                                    </span>
+                                                    <div
+                                                        className="w-full bg-error rounded-t"
+                                                        style={{ height: `${Math.max(height, 4)}%` }}
+                                                    />
+                                                    <span className="text-xs text-base-content/60 mt-1">{m.month}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {stats?.recentOrders && stats.recentOrders.length > 0 && (
+                            <div className="card bg-base-100 border border-base-300 shadow-sm">
+                                <div className="card-body">
+                                    <h3 className="card-title text-lg">Recent Orders</h3>
+                                    <div className="overflow-x-auto">
+                                        <table className="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>User</th>
+                                                    <th>Total</th>
+                                                    <th>Status</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {stats.recentOrders.map((o) => (
+                                                    <tr key={o.order_id}>
+                                                        <td>#{o.order_id}</td>
+                                                        <td>{o.username}</td>
+                                                        <td>BDT {Number(o.total_amount).toLocaleString()}</td>
+                                                        <td>
+                                                            <span
+                                                                className={`badge badge-sm ${
+                                                                    o.status === "Completed"
+                                                                        ? "badge-success"
+                                                                        : o.status === "Cancelled"
+                                                                          ? "badge-error"
+                                                                          : "badge-warning"
+                                                                }`}
+                                                            >
+                                                                {o.status}
+                                                            </span>
+                                                        </td>
+                                                        <td className="text-sm">
+                                                            {new Date(o.created_at).toLocaleDateString()}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {tab === "equipment" ? (
                 <div className="overflow-x-auto mx-auto flex justify-center rounded">
