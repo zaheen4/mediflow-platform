@@ -290,14 +290,14 @@ const AdminPage = () => {
                                             const height = maxRevenue > 0 ? (Number(m.total) / maxRevenue) * 100 : 0;
                                             return (
                                                 <div key={m.month} className="flex flex-col items-center flex-1">
-                                                    <span className="text-xs font-medium mb-1">
+                                                    <span className="text-sm font-medium mb-1">
                                                         BDT {Number(m.total).toLocaleString()}
                                                     </span>
                                                     <div
                                                         className="w-full bg-error rounded-t"
                                                         style={{ height: `${Math.max(height, 4)}%` }}
                                                     />
-                                                    <span className="text-xs text-base-content/60 mt-1">{m.month}</span>
+                                                    <span className="text-sm text-base-content/60 mt-1">{m.month}</span>
                                                 </div>
                                             );
                                         })}

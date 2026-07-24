@@ -201,7 +201,7 @@ const Checkout = () => {
                                             />
                                         </figure>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium truncate">{item.name}</p>
+                                            <p className="text-base font-medium truncate">{item.name}</p>
                                             <p className="text-xs text-base-content/70">Qty: {item.quantity}</p>
                                             <p className="text-sm font-semibold flex items-center gap-1">
                                                 <img src={bdt_icon2} alt="BDT" className="size-4 dark-invert" />

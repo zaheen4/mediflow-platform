@@ -137,7 +137,7 @@ const Shop = () => {
                                             <h2 className="card-title hover:underline">{equip.name}</h2>
                                         </Link>
                                         <p>{equip.description}</p>
-                                        <p className="pt-4 text-[16px] flex items-center">
+                                        <p className="pt-4 text-lg flex items-center">
                                             <img src={bdt_icon2} alt="bdt_icon" className="size-5 dark-invert" />{" "}
                                             {equip.price}
                                         </p>

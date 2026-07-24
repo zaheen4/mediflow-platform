@@ -139,7 +139,7 @@ const Navbar = () => {
                             <li>
                                 <div className="flex items-center gap-2">
                                     <img src={user_icon} alt="User Icon" className="w-8 h-8 rounded-full dark-invert" />
-                                    <span className="text-[14px]">{user.role}</span>
+                                    <span className="text-sm">{user.role}</span>
                                 </div>
                             </li>
                             <li>
@@ -151,7 +151,7 @@ const Navbar = () => {
                             <li>
                                 <button
                                     onClick={handleLogout}
-                                    className="btn btn-outline btn-error w-full mt-2 text-[14px]"
+                                    className="btn btn-outline btn-error w-full mt-2 text-sm"
                                 >
                                     Logout
                                 </button>
