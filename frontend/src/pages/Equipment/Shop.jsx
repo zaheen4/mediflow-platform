@@ -70,16 +70,16 @@ const Shop = () => {
                 {[1, 2, 3, 4, 5, 6].map((n) => (
                     <div
                         key={n}
-                        className="card items-center bg-[#ffffff] shadow-[0_0_20px_rgba(0,0,0,0.2)] animate-pulse"
+                        className="card items-center bg-base-100 shadow-[0_0_20px_rgba(0,0,0,0.2)] animate-pulse"
                     >
-                        <div className="w-48 h-48 bg-gray-200 rounded-lg"></div>
+                        <div className="w-48 h-48 bg-base-300 rounded-lg"></div>
                         <div className="card-body w-full bg-mediflow-pink rounded-md">
-                            <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
-                            <div className="h-4 bg-gray-200 rounded w-full mb-1"></div>
-                            <div className="h-4 bg-gray-200 rounded w-2/3 mb-4"></div>
-                            <div className="h-4 bg-gray-200 rounded w-1/3 mb-4"></div>
+                            <div className="h-6 bg-base-300 rounded w-3/4 mb-2"></div>
+                            <div className="h-4 bg-base-300 rounded w-full mb-1"></div>
+                            <div className="h-4 bg-base-300 rounded w-2/3 mb-4"></div>
+                            <div className="h-4 bg-base-300 rounded w-1/3 mb-4"></div>
                             <div className="card-actions justify-end">
-                                <div className="h-10 bg-gray-200 rounded w-28"></div>
+                                <div className="h-10 bg-base-300 rounded w-28"></div>
                             </div>
                         </div>
                     </div>
@@ -132,9 +132,9 @@ const Shop = () => {
 
                 {equipment.length === 0 ? (
                     <div className="flex flex-col items-center justify-center min-h-[40vh]">
-                        <FaSearch className="h-24 w-24 text-gray-300 mb-4" />
-                        <p className="text-xl text-gray-500 mb-4">No equipment found</p>
-                        <p className="text-gray-400">Try a different search term.</p>
+                        <FaSearch className="h-24 w-24 text-base-content/50 mb-4" />
+                        <p className="text-xl text-base-content/70 mb-4">No equipment found</p>
+                        <p className="text-base-content/60">Try a different search term.</p>
                     </div>
                 ) : (
                     <>
@@ -142,7 +142,7 @@ const Shop = () => {
                             {equipment.map((equip) => (
                                 <div
                                     key={equip.equipment_id}
-                                    className="card items-center bg-[#ffffff] shadow-[0_0_20px_rgba(0,0,0,0.2)]"
+                                    className="card items-center bg-base-100 shadow-[0_0_20px_rgba(0,0,0,0.2)]"
                                 >
                                     <Link to={`/equipment/${equip.equipment_id}`} className="w-full">
                                         <figure className="w-48 h-48 flex items-center justify-center mx-auto">

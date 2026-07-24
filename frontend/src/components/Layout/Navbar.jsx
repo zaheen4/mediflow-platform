@@ -129,16 +129,16 @@ const Navbar = () => {
                 {user ? (
                     <div className="dropdown dropdown-end mr-2">
                         <div tabIndex={0} className="btn btn-ghost flex items-center gap-2" aria-label="User menu">
-                            <img src={user_icon} alt="User Icon" className="w-8 h-8 rounded-full" />
+                            <img src={user_icon} alt="User Icon" className="w-8 h-8 rounded-full dark-invert" />
                             <span>{user.username}</span>
                         </div>
                         <ul
                             tabIndex={0}
-                            className="menu menu-sm dropdown-content mt-3 w-44 bg-gray-200 p-2 shadow rounded-box"
+                            className="menu menu-sm dropdown-content mt-3 w-44 bg-base-200 p-2 shadow rounded-box"
                         >
                             <li>
                                 <div className="flex items-center gap-2">
-                                    <img src={user_icon} alt="User Icon" className="w-8 h-8 rounded-full" />
+                                    <img src={user_icon} alt="User Icon" className="w-8 h-8 rounded-full dark-invert" />
                                     <span className="text-[14px]">{user.role}</span>
                                 </div>
                             </li>

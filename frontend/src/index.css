@@ -16,3 +16,7 @@
         font-family: var(--font-lato);
     }
 }
+
+[data-theme="dark"] .dark-invert {
+    filter: invert(1);
+}

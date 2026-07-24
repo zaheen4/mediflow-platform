@@ -52,7 +52,7 @@ const Login = () => {
     return (
         <div>
             <div className="hero bg-base-200 min-h-screen">
-                <img src={login_image2} alt="" className="h-[860px] w-[100%]" />
+                <img src={login_image2} alt="" className="h-[860px] w-full object-cover" />
                 <div className="hero-content flex-col lg:flex-row-reverse">
                     <div className="w-[48%] text-center lg:text-left text-white">
                         <h1 className="text-5xl font-bold ">Welcome to MediFlow!!</h1>
@@ -91,7 +91,7 @@ const Login = () => {
                                     />
                                     <button
                                         type="button"
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/70 hover:text-base-content"
                                         onClick={() => setShowPassword(!showPassword)}
                                     >
                                         {showPassword ? <FaEyeSlash /> : <FaEye />}

@@ -8,10 +8,9 @@ const Services = () => {
     return (
         <main className="min-h-screen w-80%">
             <div className=" mx-34 px-4 py-12">
-                <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">Our Services</h1>
-                <p className="text-lg text-gray-600 text-center mb-12">
-                    At MediFlow, we offer a wide range of services to meet your medical equipment needs. Explore our
-                    offerings below.
+                <h1 className="text-4xl font-bold text-center text-base-content mb-6">Our Services</h1>
+                <p className="text-lg text-base-content/80 text-center mb-12">
+                    At MediFlow, we&apos;re dedicated to providing reliable medical equipment solutions...
                 </p>
 
                 {/* Service Cards */}
@@ -19,18 +18,24 @@ const Services = () => {
                     {services.map((service, index) => (
                         <div
                             key={index}
-                            className="bg-[#ffffff] p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                            className="bg-base-100 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
                         >
                             <div className="text-center">
-                                <img src={service.image} alt={service.title} className="mx-auto mb-4 size-16" />
-                                <h2 className="text-xl font-semibold text-gray-800 mb-2">{service.title}</h2>
-                                <p className="text-gray-800 mb-4">{service.description}</p>
+                                <img
+                                    src={service.image}
+                                    alt={service.title}
+                                    className="mx-auto mb-4 size-16 dark-invert"
+                                />
+                                <h2 className="text-xl font-semibold text-base-content mb-2">{service.title}</h2>
+                                <p className="text-base-content mb-4">{service.description}</p>
                                 {service.link ? (
                                     <Link to={service.link} className="text-red-500 hover:text-red-600 font-semibold">
                                         Learn More →
                                     </Link>
                                 ) : (
-                                    <span className="text-gray-400 font-semibold cursor-not-allowed">Coming Soon</span>
+                                    <span className="text-base-content/60 font-semibold cursor-not-allowed">
+                                        Coming Soon
+                                    </span>
                                 )}
                             </div>
                         </div>
@@ -39,14 +44,14 @@ const Services = () => {
             </div>
 
             {/* Testimonials Section */}
-            <div className="bg-red-100 py-12">
+            <div className="bg-primary/10 py-12">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">What Our Clients Say</h2>
+                    <h2 className="text-3xl font-bold text-center text-base-content mb-8">What Our Clients Say</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {testimonials.map((testimonial, index) => (
-                            <div key={index} className="bg-white p-6 rounded-lg shadow-md ">
-                                <p className="text-gray-700 mb-4">&ldquo;{testimonial.text}&rdquo;</p>
-                                <p className="text-gray-800 font-semibold">— {testimonial.author}</p>
+                            <div key={index} className="bg-base-100 p-6 rounded-lg shadow-md">
+                                <p className="text-base-content/80 mb-4">&ldquo;{testimonial.text}&rdquo;</p>
+                                <p className="text-base-content font-semibold">— {testimonial.author}</p>
                             </div>
                         ))}
                     </div>

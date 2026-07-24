@@ -46,7 +46,7 @@ const Cart = () => {
                 <div className="flex flex-col items-center justify-center py-20">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-24 w-24 text-gray-300 mb-4"
+                        className="h-24 w-24 text-base-content/50 mb-4"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -58,7 +58,7 @@ const Cart = () => {
                             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                         />
                     </svg>
-                    <p className="text-xl text-gray-500 mb-4">Your cart is empty</p>
+                    <p className="text-xl text-base-content/70 mb-4">Your cart is empty</p>
                     <Link to="/buy-equipment" className="btn btn-primary">
                         Browse Equipment
                     </Link>
@@ -67,13 +67,13 @@ const Cart = () => {
                 <>
                     <div className="grid grid-cols-1 gap-6 w-[85%] mx-auto">
                         {cart.map((item) => (
-                            <div key={item.equipment_id} className="card flex flex-row bg-[#ffffff] shadow-md p-4">
-                                <figure className="w-24 h-24 bg-gray-100 flex items-center justify-center mr-4">
+                            <div key={item.equipment_id} className="card flex flex-row bg-base-100 shadow-md p-4">
+                                <figure className="w-24 h-24 bg-base-200 flex items-center justify-center mr-4">
                                     <img className="w-full h-full object-cover" src={item.image_url} alt={item.name} />
                                 </figure>
                                 <div className="ml-4 flex-1">
                                     <h3 className="font-bold">{item.name}</h3>
-                                    <p className="text-gray-600">{item.description}</p>
+                                    <p className="text-base-content/80">{item.description}</p>
                                     <p className="font-semibold">Price: {item.price} BDT</p>
                                     <div className="flex items-center mt-2">
                                         <input

@@ -5,7 +5,7 @@ import github_icon from "../../assets/footericons/github_icon.svg";
 const Footer = () => {
     return (
         <div>
-            <footer className="footer sm:footer-horizontal footer-center bg-gray-100 p-10 w-full">
+            <footer className="footer sm:footer-horizontal footer-center bg-base-200 p-10 w-full">
                 <aside>
                     {/* custom logo */}
                     {/* <img src={footerLogo} alt="footer-logo" className="w-15 h-15" /> */}
@@ -20,17 +20,17 @@ const Footer = () => {
                 <nav>
                     <div className="grid grid-flow-col gap-10">
                         <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                            <img src={twitter_icon} alt="twitter" />
+                            <img src={twitter_icon} alt="twitter" className="dark-invert" />
                         </a>
                         <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                            <img src={facebook_icon} alt="facebook" />
+                            <img src={facebook_icon} alt="facebook" className="dark-invert" />
                         </a>
                         <a
                             href="https://github.com/zaheen4/mediflow-platform"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <img src={github_icon} alt="github" />
+                            <img src={github_icon} alt="github" className="dark-invert" />
                         </a>
                     </div>
                 </nav>

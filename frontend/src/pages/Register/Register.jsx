@@ -76,7 +76,7 @@ const Register = () => {
 
     return (
         <div className="hero min-h-screen items-center">
-            <img src={login_image2} alt="" className="h-[860px] w-[100%] " />
+            <img src={login_image2} alt="" className="h-[860px] w-full object-cover" />
 
             <div className="max-w-sm w-full p-8 text-white shadow-[0_0_60px_rgba(0,0,0,0.3)] rounded-lg">
                 <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
@@ -127,7 +127,7 @@ const Register = () => {
                             />
                             <button
                                 type="button"
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 mt-2"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/70 hover:text-base-content mt-2"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
                                 {showPassword ? <FaEyeSlash /> : <FaEye />}

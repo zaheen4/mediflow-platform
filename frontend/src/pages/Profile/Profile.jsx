@@ -99,7 +99,7 @@ const Profile = () => {
         <div className="container mx-auto p-6 min-h-screen">
             <h2 className="text-3xl font-bold text-center mb-6">My Profile</h2>
 
-            <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+            <div className="max-w-md mx-auto bg-base-100 p-6 rounded-lg shadow-md">
                 <form onSubmit={handleSaveProfile} className="mb-6">
                     <h3 className="text-xl font-semibold mb-4">Account Information</h3>
 

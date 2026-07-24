@@ -25,7 +25,7 @@ const About = () => {
 
                 <section>
                     <div>
-                        <img src={healthtech} alt="Healthtech" width="100%" />
+                        <img src={healthtech} alt="Healthtech" className="w-full object-cover" />
                     </div>
                 </section>
             </div>

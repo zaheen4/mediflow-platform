@@ -200,13 +200,13 @@ const AdminPage = () => {
             {tab === "equipment" ? (
                 <div className="overflow-x-auto mx-auto flex justify-center rounded">
                     {equipment.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500">
+                        <div className="p-8 text-center text-base-content/70">
                             No equipment found. Add your first item below.
                         </div>
                     ) : (
-                        <table className="table-auto w-[85%]  border-collapse bg-white ">
+                        <table className="table-auto w-[85%] border-collapse bg-base-100">
                             <thead>
-                                <tr className="bg-gray-300 border border-gray-300 ">
+                                <tr className="bg-base-300 border border-base-300">
                                     <th className="p-2 w-[5%]">ID</th>
                                     <th className="p-2 w-[18%]">Name</th>
                                     <th className="p-2 w-[27%]">Description</th>
@@ -219,7 +219,7 @@ const AdminPage = () => {
                             </thead>
                             <tbody>
                                 {equipment.map((equip) => (
-                                    <tr key={equip.equipment_id} className="border-b border-gray-300">
+                                    <tr key={equip.equipment_id} className="border-b border-base-300">
                                         <td className="p-2 text-center">{equip.equipment_id}</td>
                                         <td className="p-2">
                                             {editing?.equipment_id === equip.equipment_id ? (
@@ -354,7 +354,7 @@ const AdminPage = () => {
                                     </tr>
                                 ))}
 
-                                <tr className="border-b border-gray-300">
+                                <tr className="border-b border-base-300">
                                     <td className="p-2">+</td>
                                     <td className="p-2">
                                         <input
@@ -446,11 +446,11 @@ const AdminPage = () => {
             ) : (
                 <div className="overflow-x-auto mx-auto flex justify-center rounded">
                     {orders.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500">No orders found.</div>
+                        <div className="p-8 text-center text-base-content/70">No orders found.</div>
                     ) : (
-                        <table className="table-auto w-[90%] border-collapse bg-white">
+                        <table className="table-auto w-[90%] border-collapse bg-base-100">
                             <thead>
-                                <tr className="bg-gray-300 border border-gray-300">
+                                <tr className="bg-base-300 border border-base-300">
                                     <th className="p-2">Order ID</th>
                                     <th className="p-2">User</th>
                                     <th className="p-2">Items</th>
@@ -462,7 +462,7 @@ const AdminPage = () => {
                             </thead>
                             <tbody>
                                 {orders.map((order) => (
-                                    <tr key={order.order_id} className="border-b border-gray-300">
+                                    <tr key={order.order_id} className="border-b border-base-300">
                                         <td className="p-2 text-center font-medium">#{order.order_id}</td>
                                         <td className="p-2">{order.username}</td>
                                         <td className="p-2 text-sm">
@@ -475,7 +475,7 @@ const AdminPage = () => {
                                                     ))}
                                                 </ul>
                                             ) : (
-                                                <span className="text-gray-400">—</span>
+                                                <span className="text-base-content/60">—</span>
                                             )}
                                         </td>
                                         <td className="p-2 text-right">{Number(order.total_amount).toFixed(2)}</td>
@@ -522,7 +522,7 @@ const AdminPage = () => {
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <span className="text-gray-400 text-sm">—</span>
+                                                <span className="text-base-content/60 text-sm">—</span>
                                             )}
                                         </td>
                                     </tr>
@@ -574,11 +574,11 @@ const AdminPage = () => {
                         </div>
 
                         {categories.length === 0 ? (
-                            <div className="p-8 text-center text-gray-500">No categories yet.</div>
+                            <div className="p-8 text-center text-base-content/70">No categories yet.</div>
                         ) : (
-                            <table className="table-auto w-full border-collapse bg-white">
+                            <table className="table-auto w-full border-collapse bg-base-100">
                                 <thead>
-                                    <tr className="bg-gray-300 border border-gray-300">
+                                    <tr className="bg-base-300 border border-base-300">
                                         <th className="p-2 w-[10%]">ID</th>
                                         <th className="p-2 w-[30%]">Name</th>
                                         <th className="p-2 w-[45%]">Description</th>
@@ -587,7 +587,7 @@ const AdminPage = () => {
                                 </thead>
                                 <tbody>
                                     {categories.map((cat) => (
-                                        <tr key={cat.category_id} className="border-b border-gray-300">
+                                        <tr key={cat.category_id} className="border-b border-base-300">
                                             <td className="p-2 text-center">{cat.category_id}</td>
                                             <td className="p-2">
                                                 {catEdit?.category_id === cat.category_id ? (

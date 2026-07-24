@@ -42,7 +42,7 @@ const OrderHistory = () => {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
                 <h2 className="text-2xl font-bold">No orders yet</h2>
-                <p className="text-gray-500">Your order history will appear here after checkout.</p>
+                <p className="text-base-content/70">Your order history will appear here after checkout.</p>
             </div>
         );
     }
@@ -57,7 +57,7 @@ const OrderHistory = () => {
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h2 className="card-title">Order #{order.order_id}</h2>
-                                    <p className="text-sm text-gray-500">
+                                    <p className="text-sm text-base-content/70">
                                         {new Date(order.created_at).toLocaleDateString()}
                                     </p>
                                 </div>
