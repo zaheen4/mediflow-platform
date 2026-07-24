@@ -5,8 +5,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
       MYSQL_DATABASE: ${DB_NAME:-mediflowdb}
-    ports:
-      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ./backend/mediflowdb.sql:/docker-entrypoint-initdb.d/init.sql
@@ -15,6 +13,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - mediflow-net
 
   backend:
     build: ./backend
@@ -33,6 +33,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - mediflow-net
 
   frontend:
     build: ./frontend
@@ -41,6 +43,12 @@ services:
       - "80:80"
     depends_on:
       - backend
+    networks:
+      - mediflow-net
 
 volumes:
   db_data:
+
+networks:
+  mediflow-net:
+    driver: bridge

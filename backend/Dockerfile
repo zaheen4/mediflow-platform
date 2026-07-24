@@ -1,9 +1,11 @@
 FROM node:22-alpine
 
+RUN npm i -g npm@9
+
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci --only=production
+COPY package.json package-lock.json .npmrc ./
+RUN npm ci --omit=dev
 
 COPY . .
 

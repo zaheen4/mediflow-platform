@@ -39,3 +39,6 @@ coverage/
 # Build artifacts
 *.tgz
 Thumbs.db
+
+# Project docs (not tracked)
+docs/

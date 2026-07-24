@@ -10,6 +10,10 @@ Medical equipment e-commerce. Monorepo: `frontend/` (React/Vite, ESM) + `backend
 | Dev frontend | `npm run dev:frontend` (root) → `localhost:5173` |
 | Dev backend | `npm run dev:backend` (root) → `localhost:5000` |
 | Install all | `npm run install:all` (root) |
+| Docker (first time) | `DOCKER_BUILDKIT=1 docker compose up --build` (root, needs `.env` with `SECRET_KEY`) |
+| Docker (subsequent) | `docker compose up` (root) |
+| Docker down | `docker compose down` |
+| Docker build (manual) | `DOCKER_BUILDKIT=1 docker build --network host -t <tag> ./<dir>` (bypasses broken default docker0 bridge for build-time internet) |
 | Frontend build | `npm run build` (frontend/) |
 | Frontend lint | `npm run lint` (frontend/) |
 | Frontend test | `npm test` (frontend/ — vitest) |
