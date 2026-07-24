@@ -123,6 +123,9 @@ CREATE TABLE `orders` (
   `user_id` int NOT NULL,
   `total_amount` decimal(15,2) NOT NULL,
   `status` enum('Pending','Completed','Cancelled') DEFAULT 'Pending',
+  `shipping_address` text,
+  `contact_phone` varchar(20) DEFAULT NULL,
+  `payment_method` varchar(50) DEFAULT NULL,
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`),
   FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE

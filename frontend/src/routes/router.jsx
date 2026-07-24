@@ -14,6 +14,7 @@ const AdminDashboard = lazy(() => import("../pages/Equipment/AdminDashboard"));
 const About = lazy(() => import("../pages/About/About"));
 const Services = lazy(() => import("../pages/About/Services"));
 const Cart = lazy(() => import("../pages/Cart/Cart"));
+const Checkout = lazy(() => import("../pages/Checkout/Checkout"));
 const OrderHistory = lazy(() => import("../pages/Orders/OrderHistory"));
 const Profile = lazy(() => import("../pages/Profile/Profile"));
 const NotFound = lazy(() => import("../pages/NotFound/NotFound"));
@@ -62,6 +63,15 @@ export const router = createBrowserRouter([
                         <Cart />
                     </ProtectedRoute>,
                     "Cart"
+                ),
+            },
+            {
+                path: "/checkout",
+                element: wrap(
+                    <ProtectedRoute>
+                        <Checkout />
+                    </ProtectedRoute>,
+                    "Checkout"
                 ),
             },
             {

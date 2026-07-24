@@ -17,7 +17,7 @@ const router = express.Router();
 
 // Create a new order (authenticated users only)
 router.post("/create-order", verifyToken, async (req, res) => {
-    const { items } = req.body;
+    const { items, shipping_address, contact_phone, payment_method } = req.body;
 
     validateOrderItems(items);
 
@@ -59,8 +59,8 @@ router.post("/create-order", verifyToken, async (req, res) => {
 
         const orderResult = await queryWithConnection(
             connection,
-            "INSERT INTO orders (user_id, total_amount) VALUES (?, ?)",
-            [req.user.user_id, totalAmount]
+            "INSERT INTO orders (user_id, total_amount, shipping_address, contact_phone, payment_method) VALUES (?, ?, ?, ?, ?)",
+            [req.user.user_id, totalAmount, shipping_address || null, contact_phone || null, payment_method || null]
         );
 
         const orderId = orderResult.insertId;
@@ -258,6 +258,55 @@ router.put("/orders/:id/status", verifyToken, requireAdmin, async (req, res) => 
             entity_type: "order",
             entity_id: parseInt(id),
             details: { from: previousStatus, to: status },
+        });
+    } catch (error) {
+        if (connection) await rollbackTransaction(connection);
+        throw error;
+    }
+});
+
+// Cancel own pending order (authenticated users only)
+router.put("/orders/:id/cancel", verifyToken, async (req, res) => {
+    const { id } = req.params;
+
+    const order = await executeQuery("SELECT * FROM orders WHERE order_id = ? AND user_id = ?", [id, req.user.user_id]);
+    if (order.length === 0) {
+        throw new NotFoundError("Order not found");
+    }
+
+    if (order[0].status !== "Pending") {
+        throw new ValidationError("Only pending orders can be cancelled");
+    }
+
+    let connection;
+    try {
+        connection = await beginTransaction();
+
+        await queryWithConnection(connection, "UPDATE orders SET status = 'Cancelled' WHERE order_id = ?", [id]);
+
+        const items = await queryWithConnection(
+            connection,
+            "SELECT equipment_id, quantity FROM order_items WHERE order_id = ?",
+            [id]
+        );
+        for (const item of items) {
+            await queryWithConnection(
+                connection,
+                "UPDATE equipment SET quantity = quantity + ? WHERE equipment_id = ?",
+                [item.quantity, item.equipment_id]
+            );
+        }
+
+        await commitTransaction(connection);
+        connection = null;
+
+        logger.info(`Order ${id} cancelled by user ${req.user.user_id}`);
+        res.json({ message: "Order cancelled successfully" });
+        logAudit({
+            user_id: req.user.user_id,
+            action: "cancel_order",
+            entity_type: "order",
+            entity_id: parseInt(id),
         });
     } catch (error) {
         if (connection) await rollbackTransaction(connection);
