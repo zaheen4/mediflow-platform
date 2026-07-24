@@ -34,28 +34,63 @@ A full-stack medical equipment e-commerce platform built with React and Express.
 
 ## Installation & Setup
 
-### Prerequisites
-- **Node.js 18+** and npm ([Download](https://nodejs.org/))
-- **MySQL** running locally ([Download](https://www.mysql.com/))
+### Option A: Docker (Recommended)
 
-### 1. Clone the Repository
+#### Prerequisites
+- **Docker** and **Docker Compose** ([Install Docker](https://docs.docker.com/engine/install/))
+
+#### 1. Clone the Repository
 ```sh
 git clone https://github.com/zaheen4/mediflow-platform.git
 cd mediflow-platform
 ```
 
-### 2. Install Dependencies
+#### 2. Configure Environment
+```sh
+cp .env.example .env
+```
+
+Generate a 64-character hex key and paste it into `.env` in place of `replace-with-a-64-char-hex-key`:
+```sh
+openssl rand -hex 32       # copy the output
+nano .env                  # paste it as SECRET_KEY=<output>
+```
+
+#### 3. Run
+```sh
+docker compose up --build
+```
+
+The stack starts three containers:
+- **Frontend** → `http://localhost`
+- **Backend API** → `http://localhost:5000`
+- **MySQL** → internal (not exposed)
+
+Stop with `docker compose down`.
+
+### Option B: Manual (Development)
+
+#### Prerequisites
+- **Node.js 18+** and npm ([Download](https://nodejs.org/))
+- **MySQL** running locally ([Download](https://www.mysql.com/))
+
+#### 1. Clone the Repository
+```sh
+git clone https://github.com/zaheen4/mediflow-platform.git
+cd mediflow-platform
+```
+
+#### 2. Install Dependencies
 ```sh
 npm run install:all
 ```
-This installs dependencies for the root, frontend, and backend in one command.
 
-### 3. Set Up the Database
+#### 3. Set Up the Database
 ```sh
 mysql -u root -p < backend/mediflowdb.sql
 ```
 
-### 4. Configure Environment Variables
+#### 4. Configure Environment Variables
 
 **Backend** — copy the template and fill in your values:
 ```sh
@@ -82,14 +117,13 @@ cp frontend/.env.example frontend/.env
 |----------|-------------|---------|
 | `VITE_API_BASE_URL` | Backend API base URL | `http://localhost:5000` |
 
-### 5. Run the Application
+#### 5. Run
 
-**One-command startup** (recommended):
 ```sh
 npm run dev
 ```
 
-This starts both the backend (port 5000) and frontend (port 5173) simultaneously with color-coded output.
+This starts both the backend (port 5000) and frontend (port 5173) simultaneously.
 
 **Individual servers** (if needed):
 ```sh
@@ -101,6 +135,8 @@ npm run dev:frontend  # Frontend only
 
 | Command | Scope | Description |
 |---------|-------|-------------|
+| `docker compose up --build` | root | Start full stack with Docker |
+| `docker compose down` | root | Stop Docker stack |
 | `npm run dev` | root | Start both frontend and backend |
 | `npm run dev:frontend` | root | Start frontend only |
 | `npm run dev:backend` | root | Start backend only |
@@ -192,6 +228,8 @@ mediflow-platform/
 │   │   ├── assets/              # Images, SVGs
 │   │   ├── index.css            # Tailwind + custom styles
 │   │   └── main.jsx             # Entry point (Toaster, providers)
+│   ├── .dockerignore
+│   ├── Dockerfile
 │   ├── .prettierrc
 │   ├── eslint.config.js
 │   └── vite.config.js
@@ -204,7 +242,11 @@ mediflow-platform/
 │   ├── utils/                   # db_utils, auth_utils
 │   ├── app.js                   # Express entry point
 │   ├── mediflowdb.sql           # Database schema + seed data
-│   └── db_connection.js         # MySQL connection pool
+│   ├── db_connection.js         # MySQL connection pool
+│   ├── .dockerignore
+│   └── Dockerfile
+├── docker-compose.yml           # Full-stack Docker orchestration
+├── .env.example                 # Environment template
 ├── todo/                        # Improvement roadmap (git-tracked)
 ├── screenshots/                 # Project screenshots
 ├── .gitignore
@@ -228,7 +270,7 @@ mediflow-platform/
 
 ## Additional Notes
 
-- MySQL must be running before starting the backend
+- For Docker: copy `.env.example` to `.env` in the root. For manual dev: use `backend/.env.example` and `frontend/.env.example`
 - `.env` files are excluded from version control — use `.env.example` as templates
 - If port 5173 is in use, kill the stale Vite process: `lsof -t -i:5173 | xargs kill`
 - Run `npm run build` in `frontend/` before committing UI changes
