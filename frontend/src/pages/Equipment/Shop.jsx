@@ -5,6 +5,7 @@ import { FaShoppingCart, FaSearch } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { toast } from "sonner";
+import { SkeletonCard } from "../../components/Skeleton";
 
 const Shop = () => {
     const [equipment, setEquipment] = useState([]);
@@ -64,32 +65,14 @@ const Shop = () => {
         setPage(1);
     };
 
-    const skeleton = () => (
-        <div className="justify-center flex mx-36 py-10">
-            <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3 w-[90%]">
-                {[1, 2, 3, 4, 5, 6].map((n) => (
-                    <div
-                        key={n}
-                        className="card items-center bg-base-100 shadow-[0_0_20px_rgba(0,0,0,0.2)] animate-pulse"
-                    >
-                        <div className="w-48 h-48 bg-base-300 rounded-lg"></div>
-                        <div className="card-body w-full bg-mediflow-pink rounded-md">
-                            <div className="h-6 bg-base-300 rounded w-3/4 mb-2"></div>
-                            <div className="h-4 bg-base-300 rounded w-full mb-1"></div>
-                            <div className="h-4 bg-base-300 rounded w-2/3 mb-4"></div>
-                            <div className="h-4 bg-base-300 rounded w-1/3 mb-4"></div>
-                            <div className="card-actions justify-end">
-                                <div className="h-10 bg-base-300 rounded w-28"></div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-
     if (loading && equipment.length === 0) {
-        return skeleton();
+        return (
+            <div className="justify-center flex mx-36 py-10">
+                <div className="w-[90%]">
+                    <SkeletonCard count={6} />
+                </div>
+            </div>
+        );
     }
 
     return (

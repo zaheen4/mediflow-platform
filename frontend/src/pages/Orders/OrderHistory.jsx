@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../services/api";
+import { SkeletonOrderCard } from "../../components/Skeleton";
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
@@ -32,8 +33,9 @@ const OrderHistory = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-[60vh]">
-                <span className="loading loading-spinner loading-lg"></span>
+            <div className="container mx-auto px-4 py-8">
+                <div className="h-8 skeleton rounded w-48 mb-6" />
+                <SkeletonOrderCard count={3} />
             </div>
         );
     }
