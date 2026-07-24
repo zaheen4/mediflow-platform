@@ -149,21 +149,23 @@ const Shop = () => {
                                             <img className="h-full py-2" src={equip.image_url} alt={equip.name} />
                                         </figure>
                                     </Link>
-                                    <div className="card-body w-full bg-[#ffcece] rounded-md">
+                                    <div className="card-body w-full bg-primary/10 rounded-md">
                                         <Link to={`/equipment/${equip.equipment_id}`}>
                                             <h2 className="card-title hover:underline">{equip.name}</h2>
                                         </Link>
                                         <p>{equip.description}</p>
                                         <p className="pt-4 text-[16px] flex items-center">
-                                            <img src={bdt_icon2} alt="bdt_icon" className="size-5" /> {equip.price}
+                                            <img src={bdt_icon2} alt="bdt_icon" className="size-5 dark-invert" />{" "}
+                                            {equip.price}
                                         </p>
                                         <div className="card-actions justify-end">
                                             <button
-                                                className="btn btn-soft btn-error text-black hover:text-white"
+                                                className="btn btn-soft btn-error"
+                                                disabled={equip.quantity <= 0}
                                                 onClick={() => addToCart(equip)}
                                                 aria-label={`Add ${equip.name} to cart`}
                                             >
-                                                Add to cart
+                                                {equip.quantity <= 0 ? "Out of Stock" : "Add to cart"}
                                             </button>
                                         </div>
                                     </div>
@@ -202,12 +204,16 @@ const Shop = () => {
                 )}
 
                 <button
-                    className="fixed bottom-18 right-20 bg-red-500 text-white p-4 rounded-full shadow-lg flex items-center gap-2"
+                    className="btn btn-error btn-circle btn-lg fixed bottom-8 right-8 shadow-lg hover:shadow-xl transition-shadow duration-300"
                     onClick={() => navigate("/cart")}
                     aria-label={`Cart with ${getTotalItems()} items`}
                 >
-                    <FaShoppingCart />
-                    Cart ({getTotalItems()})
+                    <div className="indicator">
+                        <FaShoppingCart className="text-xl" />
+                        {getTotalItems() > 0 && (
+                            <span className="indicator-item badge badge-secondary badge-sm">{getTotalItems()}</span>
+                        )}
+                    </div>
                 </button>
             </div>
         </div>

@@ -21,13 +21,19 @@ async function beginTransaction() {
 }
 
 async function commitTransaction(connection) {
-    await connection.commit();
-    connection.release();
+    try {
+        await connection.commit();
+    } finally {
+        connection.release();
+    }
 }
 
 async function rollbackTransaction(connection) {
-    await connection.rollback();
-    connection.release();
+    try {
+        await connection.rollback();
+    } finally {
+        connection.release();
+    }
 }
 
 module.exports = {

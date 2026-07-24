@@ -6,15 +6,15 @@ import mediflowlogo from "../../assets/images/mediflow.jpg";
 
 const About = () => {
     return (
-        <div className="inter_font">
+        <div>
             <div className="w-[95%] md:w-[80%] lg:w-[70%] mx-auto p-6 md:p-10">
                 <section className="flex flex-col lg:flex-row my-10 gap-6">
-                    <div className="section_title w-full lg:w-[60%]">
-                        <h6 className="zero_margin text-3xl md:text-4xl lg:text-5xl">
+                    <div className="w-full lg:w-[60%]">
+                        <h6 className="text-3xl md:text-4xl lg:text-5xl">
                             MediFlow offers you the best medical equipment and treatment for your life.
                         </h6>
                     </div>
-                    <div className="little_style w-full lg:w-[45%] text-base md:text-lg">
+                    <div className="w-full lg:w-[45%] text-base md:text-lg">
                         <h3>
                             Our team has only one goal: to create an environment where medical equipment is within
                             everyone&apos;s reach. &ldquo;Every single one of us deserves access to quality, affordable
@@ -30,10 +30,10 @@ const About = () => {
                 </section>
             </div>
 
-            <section className="team_container">
+            <section>
                 <div className="text-center my-8">
-                    <h2 className="section_title text-4xl pb-2">Meet Our Team</h2>
-                    <p className="section_description text-xl">
+                    <h2 className="text-4xl pb-2">Meet Our Team</h2>
+                    <p className="text-xl">
                         We believe medical equipment should be accessible to everyone, everywhere, regardless of income
                         and class.
                     </p>
@@ -48,7 +48,7 @@ const About = () => {
                         ].map((member, index) => (
                             <div
                                 key={index}
-                                className={`relative rounded-xl overflow-hidden student student_${index + 1}`}
+                                className="relative rounded-xl overflow-hidden"
                                 style={{
                                     backgroundImage: `url(${member.image})`,
                                     backgroundSize: "cover",

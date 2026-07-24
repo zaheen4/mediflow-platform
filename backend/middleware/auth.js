@@ -1,6 +1,8 @@
+const { ForbiddenError } = require("../utils/errors");
+
 function requireAdmin(req, res, next) {
     if (!req.user || req.user.role !== "Admin") {
-        return res.status(403).json({ error: "Access denied. Admin privileges required." });
+        throw new ForbiddenError("Access denied. Admin privileges required.");
     }
     next();
 }

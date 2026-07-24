@@ -7,9 +7,9 @@ const router = express.Router();
 
 router.get("/cart", verifyToken, async (req, res) => {
     const items = await executeQuery(
-        `SELECT c.equipment_id, c.quantity, e.name, e.price, e.image_url, e.quantity AS stock
+        `SELECT c.equipment_id, c.quantity, e.name, e.description, e.price, e.image_url, e.quantity AS stock
          FROM cart_items c
-         JOIN equipment e ON c.equipment_id = e.equipment_id
+         JOIN equipment e ON c.equipment_id = e.equipment_id AND e.deleted_at IS NULL
          WHERE c.user_id = ?
          ORDER BY c.cart_item_id`,
         [req.user.user_id]
@@ -28,31 +28,21 @@ router.post("/cart/add", verifyToken, async (req, res) => {
         throw new ValidationError("equipment_id is required");
     }
 
-    const equipment = await executeQuery("SELECT equipment_id, name FROM equipment WHERE equipment_id = ?", [
+    const equipment = await executeQuery("SELECT equipment_id, name, quantity FROM equipment WHERE equipment_id = ?", [
         equipment_id,
     ]);
     if (equipment.length === 0) {
         throw new NotFoundError("Equipment not found");
     }
-
-    const existing = await executeQuery("SELECT quantity FROM cart_items WHERE user_id = ? AND equipment_id = ?", [
-        req.user.user_id,
-        equipment_id,
-    ]);
-
-    if (existing.length > 0) {
-        await executeQuery("UPDATE cart_items SET quantity = quantity + ? WHERE user_id = ? AND equipment_id = ?", [
-            quantity,
-            req.user.user_id,
-            equipment_id,
-        ]);
-    } else {
-        await executeQuery("INSERT INTO cart_items (user_id, equipment_id, quantity) VALUES (?, ?, ?)", [
-            req.user.user_id,
-            equipment_id,
-            quantity,
-        ]);
+    if (equipment[0].quantity <= 0) {
+        throw new ValidationError(`${equipment[0].name} is out of stock`);
     }
+
+    await executeQuery(
+        `INSERT INTO cart_items (user_id, equipment_id, quantity) VALUES (?, ?, ?)
+         ON DUPLICATE KEY UPDATE quantity = quantity + ?`,
+        [req.user.user_id, equipment_id, quantity, quantity]
+    );
 
     res.status(201).json({ message: "Item added to cart" });
 });

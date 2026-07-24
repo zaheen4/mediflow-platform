@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { UnauthorizedError } = require("./errors");
 
 function generateToken(user_id, role) {
     const payload = {
@@ -11,7 +12,7 @@ function generateToken(user_id, role) {
 function verifyToken(req, res, next) {
     const token = req.headers.authorization;
     if (!token || !token.startsWith("Bearer ")) {
-        return res.status(401).json({ error: "No valid token provided" });
+        throw new UnauthorizedError("No valid token provided");
     }
 
     try {
@@ -19,7 +20,7 @@ function verifyToken(req, res, next) {
         req.user = decodedToken;
         next();
     } catch {
-        return res.status(401).json({ error: "Invalid token" });
+        throw new UnauthorizedError("Invalid token");
     }
 }
 

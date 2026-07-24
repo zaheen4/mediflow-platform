@@ -21,13 +21,17 @@ router.post("/create-order", verifyToken, async (req, res) => {
 
     validateOrderItems(items);
 
-    const validatedItems = [];
-    let totalAmount = 0;
-
+    let connection;
     try {
+        connection = await beginTransaction();
+
+        const validatedItems = [];
+        let totalAmount = 0;
+
         for (const item of items) {
-            const equipment = await executeQuery(
-                "SELECT equipment_id, name, price, quantity FROM equipment WHERE equipment_id = ?",
+            const equipment = await queryWithConnection(
+                connection,
+                "SELECT equipment_id, name, price, quantity FROM equipment WHERE equipment_id = ? AND deleted_at IS NULL FOR UPDATE",
                 [item.equipment_id]
             );
 
@@ -52,17 +56,6 @@ router.post("/create-order", verifyToken, async (req, res) => {
                 price_at_purchase: eq.price,
             });
         }
-    } catch (error) {
-        if (error instanceof AppError) {
-            throw error;
-        }
-        logger.error("Error validating order items:", error);
-        throw error;
-    }
-
-    let connection;
-    try {
-        connection = await beginTransaction();
 
         const orderResult = await queryWithConnection(
             connection,
@@ -79,11 +72,15 @@ router.post("/create-order", verifyToken, async (req, res) => {
                 [orderId, item.equipment_id, item.quantity, item.price_at_purchase]
             );
 
-            await queryWithConnection(
+            const result = await queryWithConnection(
                 connection,
-                "UPDATE equipment SET quantity = quantity - ? WHERE equipment_id = ?",
-                [item.quantity, item.equipment_id]
+                "UPDATE equipment SET quantity = quantity - ? WHERE equipment_id = ? AND quantity >= ?",
+                [item.quantity, item.equipment_id, item.quantity]
             );
+
+            if (result.affectedRows === 0) {
+                throw new ValidationError(`Insufficient stock for equipment ID ${item.equipment_id}`);
+            }
         }
 
         await commitTransaction(connection);
@@ -97,7 +94,14 @@ router.post("/create-order", verifyToken, async (req, res) => {
             details: { totalAmount, itemCount: validatedItems.length },
         });
     } catch (error) {
-        if (connection) await rollbackTransaction(connection);
+        if (connection) {
+            try {
+                await rollbackTransaction(connection);
+            } catch (rollbackError) {
+                logger.error("Rollback failed:", rollbackError);
+            }
+        }
+        if (error instanceof AppError) throw error;
         throw error;
     }
 });

@@ -62,7 +62,7 @@ const OrderHistory = () => {
                                     </p>
                                 </div>
                                 <span className="badge badge-primary badge-lg">
-                                    ${parseFloat(order.total_amount).toFixed(2)}
+                                    BDT {parseFloat(order.total_amount).toFixed(2)}
                                 </span>
                             </div>
                             <div className="divider my-2"></div>
@@ -81,8 +81,8 @@ const OrderHistory = () => {
                                             <tr key={item.order_item_id}>
                                                 <td>{item.equipment_name}</td>
                                                 <td>{item.quantity}</td>
-                                                <td>${parseFloat(item.unit_price).toFixed(2)}</td>
-                                                <td>${(item.quantity * item.unit_price).toFixed(2)}</td>
+                                                <td>BDT {parseFloat(item.unit_price).toFixed(2)}</td>
+                                                <td>BDT {(item.quantity * item.unit_price).toFixed(2)}</td>
                                             </tr>
                                         ))}
                                     </tbody>

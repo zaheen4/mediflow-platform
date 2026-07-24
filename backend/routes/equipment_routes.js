@@ -2,7 +2,7 @@ const express = require("express");
 const { executeQuery } = require("../utils/db_utils");
 const { verifyToken } = require("../utils/auth_utils");
 const { requireAdmin } = require("../middleware/auth");
-const { NotFoundError } = require("../utils/errors");
+const { NotFoundError, ValidationError } = require("../utils/errors");
 const { validateEquipmentData } = require("../utils/validation");
 const { logAudit } = require("../utils/audit");
 
@@ -108,24 +108,38 @@ router.put("/modify-equipment/:equipment_id", verifyToken, requireAdmin, async (
 
     validateEquipmentData({ name, price, quantity }, true);
 
-    const query =
-        "UPDATE equipment SET name = ?, description = ?, price = ?, quantity = ?, image_url = ?, category_id = ? WHERE equipment_id = ?";
-    await executeQuery(query, [
-        name,
-        description,
-        price,
-        quantity,
-        image_url || null,
-        category_id || null,
-        equipment_id,
-    ]);
+    const fields = [];
+    const values = [];
+
+    const fieldMap = { name, description, price, quantity, image_url, category_id };
+    for (const [key, value] of Object.entries(fieldMap)) {
+        if (value !== undefined) {
+            fields.push(`${key} = ?`);
+            if (key === "price") {
+                values.push(parseFloat(value));
+            } else if (key === "quantity") {
+                values.push(parseInt(value));
+            } else if (key === "image_url" || key === "category_id") {
+                values.push(value || null);
+            } else {
+                values.push(value);
+            }
+        }
+    }
+
+    if (fields.length === 0) {
+        throw new ValidationError("No fields to update");
+    }
+
+    values.push(equipment_id);
+    await executeQuery(`UPDATE equipment SET ${fields.join(", ")} WHERE equipment_id = ?`, values);
     res.status(200).json({ message: "Equipment modified successfully" });
     logAudit({
         user_id: req.user.user_id,
         action: "modify_equipment",
         entity_type: "equipment",
         entity_id: parseInt(equipment_id),
-        details: { name },
+        details: { name: name || "updated" },
     });
 });
 

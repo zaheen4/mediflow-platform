@@ -52,35 +52,38 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = useCallback(
         async (equip) => {
+            const fallbackAdd = () => {
+                setCart((prev) => {
+                    const itemIndex = prev.findIndex((item) => item.equipment_id === equip.equipment_id);
+                    if (itemIndex !== -1) {
+                        const updated = [...prev];
+                        updated[itemIndex].quantity += 1;
+                        return updated;
+                    }
+                    return [...prev, { ...equip, quantity: 1 }];
+                });
+                toast.success(`${equip.name} added to cart`);
+            };
+
             if (synced) {
                 try {
                     await api.post("/cart/add", { equipment_id: equip.equipment_id });
                     const res = await api.get("/cart");
                     setCart(res.data.items || []);
                     toast.success(`${equip.name} added to cart`);
-                } catch {
-                    fallbackAdd(equip);
+                } catch (error) {
+                    if (error.response?.status === 401) {
+                        fallbackAdd();
+                    } else {
+                        toast.error(error.response?.data?.message || "Failed to add to cart");
+                    }
                 }
             } else {
-                fallbackAdd(equip);
+                fallbackAdd();
             }
         },
         [synced]
     );
-
-    function fallbackAdd(equip) {
-        setCart((prev) => {
-            const itemIndex = prev.findIndex((item) => item.equipment_id === equip.equipment_id);
-            if (itemIndex !== -1) {
-                const updated = [...prev];
-                updated[itemIndex].quantity += 1;
-                toast.info(`${equip.name} quantity updated in cart`);
-                return updated;
-            }
-            toast.success(`${equip.name} added to cart`);
-            return [...prev, { ...equip, quantity: 1 }];
-        });
-    }
 
     const removeFromCart = useCallback(
         async (id) => {

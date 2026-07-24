@@ -70,9 +70,13 @@
 - **Passwords**: Always hashed with bcrypt (min 6 characters enforced)
 
 ## Git Workflow
+- **Branch strategy**: Simple branch-per-feature on top of `main` (no `develop`/`release`/`hotfix` — overkill for solo dev)
+- **When to branch**: UI redesigns, schema changes, refactors touching both frontend+backend, or anything that would break `main` if deployed mid-way. Simple bug fixes and small features can commit directly to `main`.
+- **Branch naming**: `feat/<short-description>` or `fix/<short-description>`
 - **Incremental commits** per feature/fix or phase
 - **Commit messages**: Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, etc.) enforced by commitlint
 - **Pre-commit hooks**: Husky runs lint-staged (ESLint + Prettier on frontend files, Prettier on backend files)
+- **Before merging a branch**: rebase on `main`, then `git merge --no-ff feat/xxx` (preserves branch context in history)
 - **Never push** unless explicitly asked
 - **todo/ folder**: Git-tracked roadmap — do not delete or ignore
 

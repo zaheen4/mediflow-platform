@@ -2,8 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { CartContext } from "../../context/CartContext";
-import bdt_icon2 from "../../assets/bdt_icon2.svg";
 import { toast } from "sonner";
+import bdt_icon2 from "../../assets/bdt_icon2.svg";
 
 const EquipmentDetail = () => {
     const { id } = useParams();
@@ -49,7 +49,7 @@ const EquipmentDetail = () => {
 
                     <div className="flex items-center gap-2 mt-4">
                         <p className="text-2xl font-semibold flex items-center gap-1">
-                            <img src={bdt_icon2} alt="bdt_icon" className="size-6" /> {equip.price}
+                            <img src={bdt_icon2} alt="bdt_icon" className="size-6 dark-invert" /> {equip.price}
                         </p>
                     </div>
 
@@ -65,10 +65,7 @@ const EquipmentDetail = () => {
                         <button
                             className="btn btn-error btn-lg flex-1"
                             disabled={equip.quantity <= 0}
-                            onClick={() => {
-                                addToCart(equip);
-                                toast.success(`${equip.name} added to cart`);
-                            }}
+                            onClick={() => addToCart(equip)}
                         >
                             Add to Cart
                         </button>
