@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Category {
+  id          Int         @id @default(autoincrement()) @map("category_id")
+  name        String      @unique(map: "name") @db.VarChar(100)
+  description String?     @db.Text
+  equipment   Equipment[]
+
+  @@map("categories")
+}
+
+model Equipment {
+  id          Int         @id @default(autoincrement()) @map("equipment_id")
+  name        String      @db.VarChar(100)
+  description String?     @db.Text
+  price       Decimal     @db.Decimal(15, 2)
+  quantity    Int
+  imageUrl    String?     @map("image_url") @db.VarChar(255)
+  categoryId  Int?        @map("category_id")
+  deletedAt   DateTime?   @map("deleted_at") @db.Timestamp(0)
+  cartItems   CartItem[]
+  category    Category?   @relation(fields: [categoryId], references: [id], onUpdate: NoAction, map: "equipment_ibfk_1")
+  orderItems  OrderItem[]
+
+  @@index([categoryId], map: "category_id")
+  @@map("equipment")
+}
+
+model User {
+  id        Int        @id @default(autoincrement()) @map("user_id")
+  username  String     @unique(map: "username") @db.VarChar(50)
+  password  String     @db.VarChar(255)
+  role      Role
+  email     String     @unique(map: "email") @db.VarChar(255)
+  auditLogs AuditLog[]
+  cartItems CartItem[]
+  orders    Order[]
+
+  @@map("users")
+}
+
+model Order {
+  id              Int          @id @default(autoincrement()) @map("order_id")
+  userId          Int          @map("user_id")
+  totalAmount     Decimal      @map("total_amount") @db.Decimal(15, 2)
+  status          OrderStatus? @default(Pending)
+  shippingAddress String?      @map("shipping_address") @db.Text
+  contactPhone    String?      @map("contact_phone") @db.VarChar(20)
+  paymentMethod   String?      @map("payment_method") @db.VarChar(50)
+  createdAt       DateTime?    @default(now()) @map("created_at") @db.Timestamp(0)
+  items           OrderItem[]
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "orders_ibfk_1")
+
+  @@index([userId], map: "idx_orders_user_id")
+  @@map("orders")
+}
+
+model OrderItem {
+  id              Int       @id @default(autoincrement()) @map("order_item_id")
+  orderId         Int       @map("order_id")
+  equipmentId     Int       @map("equipment_id")
+  quantity        Int
+  priceAtPurchase Decimal   @map("price_at_purchase") @db.Decimal(15, 2)
+  order           Order     @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "order_items_ibfk_1")
+  equipment       Equipment @relation(fields: [equipmentId], references: [id], onUpdate: NoAction, map: "order_items_ibfk_2")
+
+  @@index([equipmentId], map: "idx_order_items_equipment_id")
+  @@index([orderId], map: "idx_order_items_order_id")
+  @@map("order_items")
+}
+
+model CartItem {
+  id          Int       @id @default(autoincrement()) @map("cart_item_id")
+  userId      Int       @map("user_id")
+  equipmentId Int       @map("equipment_id")
+  quantity    Int       @default(1)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "cart_items_ibfk_1")
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onUpdate: NoAction, map: "cart_items_ibfk_2")
+
+  @@unique([userId, equipmentId], map: "unique_user_equipment")
+  @@index([equipmentId], map: "equipment_id")
+  @@map("cart_items")
+}
+
+model AuditLog {
+  id         Int       @id @default(autoincrement()) @map("log_id")
+  userId     Int?      @map("user_id")
+  action     String    @db.VarChar(100)
+  entityType String?   @map("entity_type") @db.VarChar(50)
+  entityId   Int?      @map("entity_id")
+  details    Json?
+  createdAt  DateTime? @default(now()) @map("created_at") @db.Timestamp(0)
+  user       User?     @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "audit_log_ibfk_1")
+
+  @@index([action], map: "idx_audit_log_action")
+  @@index([createdAt], map: "idx_audit_log_created_at")
+  @@index([userId], map: "idx_audit_log_user_id")
+  @@map("audit_log")
+}
+
+enum Role {
+  Admin
+  User
+
+  @@map("role")
+}
+
+enum OrderStatus {
+  Pending
+  Completed
+  Cancelled
+
+  @@map("order_status")
+}
