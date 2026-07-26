@@ -6,7 +6,11 @@
   "scripts": {
     "test": "jest --runInBand --forceExit",
     "lint": "eslint . --config eslint.config.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "db:migrate": "npx prisma migrate deploy",
+    "db:migrate:dev": "npx prisma migrate dev",
+    "db:generate": "npx prisma generate",
+    "db:studio": "npx prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +20,7 @@
   },
   "type": "commonjs",
   "dependencies": {
+    "@prisma/client": "^7.9.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -29,6 +34,7 @@
   },
   "devDependencies": {
     "jest": "^30.4.2",
+    "prisma": "^7.9.0",
     "supertest": "^7.2.2"
   }
 }
