@@ -20,6 +20,7 @@
   },
   "type": "commonjs",
   "dependencies": {
+    "@prisma/adapter-mariadb": "^7.9.0",
     "@prisma/client": "^7.9.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
@@ -28,6 +29,7 @@
     "express-rate-limit": "^8.5.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
+    "mariadb": "^3.5.3",
     "mysql2": "^3.23.1",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"

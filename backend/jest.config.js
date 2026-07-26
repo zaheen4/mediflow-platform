@@ -7,6 +7,7 @@ module.exports = {
         "/__tests__/setup\\.js$",
         "/__tests__/jest\\.setup\\.js$",
         "/__tests__/globalSetup\\.js$",
+        "/prisma/",
     ],
     verbose: true,
 };
