@@ -8,6 +8,11 @@ module.exports = async function () {
         stdio: "inherit",
         env: { ...process.env, DATABASE_URL: testUrl, PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION: "Yes, proceed" },
     });
+    execSync("npx prisma generate", {
+        cwd: require("path").join(__dirname, ".."),
+        stdio: "inherit",
+        env: { ...process.env, DATABASE_URL: testUrl },
+    });
     execSync("node prisma/seed.test.js", {
         cwd: require("path").join(__dirname, ".."),
         stdio: "inherit",
