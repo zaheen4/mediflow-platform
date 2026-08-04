@@ -1,86 +1,94 @@
-const mysql = require("mysql2/promise");
-const fs = require("fs");
-const path = require("path");
+const { PrismaMariaDb } = require("@prisma/adapter-mariadb");
+const { PrismaClient } = require("@prisma/client");
 
 const TEST_DB = "mediflowdb_test";
 
-async function recreateDatabase() {
-    const pool = await mysql.createPool({
-        connectionLimit: 1,
-        host: process.env.DB_HOST || "localhost",
-        user: process.env.DB_USER || "root",
-        password: process.env.DB_PASSWORD || "root",
+function createTestPrisma() {
+    const url = new URL(process.env.DATABASE_URL);
+    const adapter = new PrismaMariaDb({
+        host: url.hostname,
+        port: Number(url.port) || 3306,
+        user: decodeURIComponent(url.username),
+        password: decodeURIComponent(url.password),
+        database: url.pathname.replace(/^\//, ""),
     });
-
-    await pool.query(`DROP DATABASE IF EXISTS \`${TEST_DB}\``);
-    await pool.query(`CREATE DATABASE \`${TEST_DB}\``);
-    await pool.end();
-
-    const dataPool = await mysql.createPool({
-        connectionLimit: 1,
-        host: process.env.DB_HOST || "localhost",
-        user: process.env.DB_USER || "root",
-        password: process.env.DB_PASSWORD || "root",
-        database: TEST_DB,
-        multipleStatements: true,
-    });
-
-    const sqlPath = path.join(__dirname, "..", "mediflowdb.sql");
-    const sql = fs
-        .readFileSync(sqlPath, "utf8")
-        .replace(/CREATE DATABASE[^;]+;/gi, "")
-        .replace(/USE\s+`?\w+`?;/gi, "");
-
-    await dataPool.query(sql);
-    await dataPool.end();
+    const prisma = new PrismaClient({ adapter });
+    return { prisma };
 }
 
+async function recreateDatabase() {}
+
 async function clearTables() {
-    const pool = await mysql.createPool({
-        connectionLimit: 1,
-        host: process.env.DB_HOST || "localhost",
-        user: process.env.DB_USER || "root",
-        password: process.env.DB_PASSWORD || "root",
-        database: TEST_DB,
-        multipleStatements: true,
+    const { prisma } = createTestPrisma();
+    await prisma.cartItem.deleteMany();
+    await prisma.orderItem.deleteMany();
+    await prisma.order.deleteMany();
+    await prisma.equipment.deleteMany();
+    await prisma.category.deleteMany();
+    await prisma.user.deleteMany();
+
+    await prisma.category.createMany({
+        data: [
+            { id: 1, name: "Protective Equipment", description: "PPE" },
+            { id: 2, name: "Diagnostic Equipment", description: "Diagnostics" },
+        ],
     });
-
-    await pool.query(
-        `SET FOREIGN_KEY_CHECKS = 0;
-         TRUNCATE TABLE cart_items;
-         TRUNCATE TABLE order_items;
-         TRUNCATE TABLE orders;
-         TRUNCATE TABLE equipment;
-         TRUNCATE TABLE categories;
-         TRUNCATE TABLE users;
-         SET FOREIGN_KEY_CHECKS = 1;
-             INSERT INTO categories (category_id, name, description)
-             VALUES
-               (1, 'Protective Equipment', 'PPE'),
-               (2, 'Diagnostic Equipment', 'Diagnostics');
-             INSERT INTO equipment (equipment_id, name, description, price, quantity, image_url, category_id)
-             VALUES
-               (1, 'PPE Kit', 'Disposable PPE Coverall', 109.72, 3400, 'http://example.com/ppe.jpg', 1),
-               (2, 'X-Ray Machine', 'Medical X-Ray System', 1218972.10, 1, 'http://example.com/xray.jpg', 2),
-               (3, 'Surgical Kit', 'Basic Surgical Instrument Set', 242599.94, 5, 'http://example.com/surgical.jpg', NULL),
-               (4, 'Blood Analyzer', 'Auto 5 Part Hematology Analyzer', 60954.60, 1, 'http://example.com/blood.jpg', NULL),
-               (5, 'Patient Monitor', 'Multi-Parameter Monitor', 19505.48, 1, 'http://example.com/monitor.jpg', NULL);`
-    );
-
-    await pool.end();
+    await prisma.equipment.createMany({
+        data: [
+            {
+                id: 1,
+                name: "PPE Kit",
+                description: "Disposable PPE Coverall",
+                price: 109.72,
+                quantity: 3400,
+                imageUrl: "http://example.com/ppe.jpg",
+                categoryId: 1,
+            },
+            {
+                id: 2,
+                name: "X-Ray Machine",
+                description: "Medical X-Ray System",
+                price: 1218972.1,
+                quantity: 1,
+                imageUrl: "http://example.com/xray.jpg",
+                categoryId: 2,
+            },
+            {
+                id: 3,
+                name: "Surgical Kit",
+                description: "Basic Surgical Instrument Set",
+                price: 242599.94,
+                quantity: 5,
+                imageUrl: "http://example.com/surgical.jpg",
+            },
+            {
+                id: 4,
+                name: "Blood Analyzer",
+                description: "Auto 5 Part Hematology Analyzer",
+                price: 60954.6,
+                quantity: 1,
+                imageUrl: "http://example.com/blood.jpg",
+            },
+            {
+                id: 5,
+                name: "Patient Monitor",
+                description: "Multi-Parameter Monitor",
+                price: 19505.48,
+                quantity: 1,
+                imageUrl: "http://example.com/monitor.jpg",
+            },
+        ],
+    });
+    await prisma.$disconnect();
 }
 
 async function promoteAdmin(username) {
-    const pool = await mysql.createPool({
-        connectionLimit: 1,
-        host: process.env.DB_HOST || "localhost",
-        user: process.env.DB_USER || "root",
-        password: process.env.DB_PASSWORD || "root",
-        database: TEST_DB,
+    const { prisma } = createTestPrisma();
+    await prisma.user.update({
+        where: { username },
+        data: { role: "Admin" },
     });
-
-    await pool.query("UPDATE users SET role = 'Admin' WHERE username = ?", [username]);
-    await pool.end();
+    await prisma.$disconnect();
 }
 
 module.exports = { recreateDatabase, clearTables, promoteAdmin, TEST_DB };
