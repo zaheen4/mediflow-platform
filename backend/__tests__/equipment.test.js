@@ -167,3 +167,50 @@ describe("DELETE /delete-equipment/:id (Admin only)", () => {
         expect(res.status).toBe(401);
     });
 });
+
+describe("GET /equipment (search, category, pagination)", () => {
+    it("should filter by search term", async () => {
+        const res = await request(app).get("/equipment").query({ search: "X-Ray" });
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBeGreaterThan(0);
+        expect(res.body.data.every((e) => `${e.name} ${e.description}`.toLowerCase().includes("x-ray"))).toBe(true);
+    });
+
+    it("should filter by category", async () => {
+        const res = await request(app).get("/equipment").query({ category: 1 });
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBeGreaterThan(0);
+        expect(res.body.data.every((e) => e.category_id === 1)).toBe(true);
+    });
+
+    it("should return a paginated payload", async () => {
+        const res = await request(app).get("/equipment").query({ page: 1, limit: 2 });
+
+        expect(res.status).toBe(200);
+        expect(res.body.data).toBeDefined();
+        expect(res.body.total).toBeGreaterThan(0);
+        expect(res.body.page).toBe(1);
+        expect(res.body.limit).toBe(2);
+        expect(res.body.totalPages).toBeGreaterThanOrEqual(1);
+    });
+});
+
+describe("PUT /modify-equipment/:id edge cases (Admin only)", () => {
+    it("should allow updating only image_url", async () => {
+        const res = await request(app)
+            .put("/modify-equipment/2")
+            .set("Authorization", `Bearer ${adminToken}`)
+            .send({ image_url: "http://example.com/new.jpg" });
+
+        expect(res.status).toBe(200);
+    });
+
+    it("should reject an empty update body", async () => {
+        const res = await request(app).put("/modify-equipment/2").set("Authorization", `Bearer ${adminToken}`).send({});
+
+        expect(res.status).toBe(400);
+    });
+});

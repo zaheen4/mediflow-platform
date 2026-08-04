@@ -1,5 +1,7 @@
 const { PrismaMariaDb } = require("@prisma/adapter-mariadb");
 const { PrismaClient } = require("@prisma/client");
+const request = require("supertest");
+const app = require("../app");
 
 const TEST_DB = "mediflowdb_test";
 
@@ -91,4 +93,61 @@ async function promoteAdmin(username) {
     await prisma.$disconnect();
 }
 
-module.exports = { recreateDatabase, clearTables, promoteAdmin, TEST_DB };
+async function createTestUser({ username, password = "password123", email, role = "User" } = {}) {
+    const userEmail = email || `${username}@test.com`;
+    const register = await request(app).post("/register").send({ username, password, email: userEmail });
+    if (register.status !== 201) {
+        throw new Error(`createTestUser: register failed (${register.status}): ${JSON.stringify(register.body)}`);
+    }
+    if (role === "Admin") {
+        await promoteAdmin(username);
+    }
+    const login = await request(app).post("/login").send({ username, password });
+    return { username, password, email: userEmail, role, token: login.body.token };
+}
+
+async function loginAs(username, password = "password123") {
+    const res = await request(app).post("/login").send({ username, password });
+    return { token: res.body.token, role: res.body.role };
+}
+
+async function getAuthToken(username, password = "password123") {
+    const res = await request(app).post("/login").send({ username, password });
+    return res.body.token;
+}
+
+async function createEquipment(adminToken, overrides = {}) {
+    const payload = {
+        name: overrides.name ?? `Test Equipment ${Date.now()}`,
+        description: overrides.description ?? "Test equipment",
+        price: overrides.price ?? 100,
+        quantity: overrides.quantity ?? 10,
+    };
+    if (overrides.image_url !== undefined) payload.image_url = overrides.image_url;
+    if (overrides.category_id !== undefined) payload.category_id = overrides.category_id;
+    const res = await request(app).post("/add-equipment").set("Authorization", `Bearer ${adminToken}`).send(payload);
+    if (res.status !== 201) {
+        throw new Error(`createEquipment: add failed (${res.status}): ${JSON.stringify(res.body)}`);
+    }
+    return res.body;
+}
+
+async function createOrder(userToken, items) {
+    const res = await request(app).post("/create-order").set("Authorization", `Bearer ${userToken}`).send({ items });
+    if (res.status !== 201) {
+        throw new Error(`createOrder: failed (${res.status}): ${JSON.stringify(res.body)}`);
+    }
+    return res.body.orderId;
+}
+
+module.exports = {
+    recreateDatabase,
+    clearTables,
+    promoteAdmin,
+    createTestUser,
+    loginAs,
+    getAuthToken,
+    createEquipment,
+    createOrder,
+    TEST_DB,
+};
