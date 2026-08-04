@@ -65,7 +65,7 @@ jobs:
         working-directory: frontend
 
       - name: Backend tests
-        run: npm test
+        run: npm test -- --coverage
         working-directory: backend
         env:
           DB_HOST: localhost

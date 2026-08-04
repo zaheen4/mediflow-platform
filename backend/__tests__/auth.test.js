@@ -1,6 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
 const { clearTables } = require("./setup");
+const { generateToken } = require("../utils/auth_utils");
 const pool = require("../db_connection");
 
 beforeAll(async () => {
@@ -278,5 +279,37 @@ describe("PUT /users/me", () => {
     it("should reject unauthenticated request", async () => {
         const res = await request(app).put("/users/me").send({ username: "hacker" });
         expect(res.status).toBe(401);
+    });
+});
+
+describe("authenticated routes with non-existent user", () => {
+    let ghostToken;
+
+    beforeAll(() => {
+        ghostToken = generateToken(999999, "User");
+    });
+
+    it("change-password should return 404 for missing user", async () => {
+        const res = await request(app)
+            .put("/change-password")
+            .set("Authorization", `Bearer ${ghostToken}`)
+            .send({ currentPassword: "password123", newPassword: "newpassword123" });
+
+        expect(res.status).toBe(404);
+    });
+
+    it("GET /users/me should return 404 for missing user", async () => {
+        const res = await request(app).get("/users/me").set("Authorization", `Bearer ${ghostToken}`);
+
+        expect(res.status).toBe(404);
+    });
+
+    it("PUT /users/me should return 404 for missing user", async () => {
+        const res = await request(app)
+            .put("/users/me")
+            .set("Authorization", `Bearer ${ghostToken}`)
+            .send({ username: "ghost" });
+
+        expect(res.status).toBe(404);
     });
 });
