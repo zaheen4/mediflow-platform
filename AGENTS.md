@@ -23,7 +23,8 @@ Medical equipment e-commerce. Monorepo: `frontend/` (React/Vite, ESM) + `backend
 
 ## Git & PR Workflow
 
-- **Branch**: `feat/<desc>` or `fix/<desc>` from `main`. Branch for anything that would break `main` mid-way (schema changes, cross-stack refactors, UI redesigns). Small fixes → commit directly to `main`.
+- **Branch**: `feat/<desc>` or `fix/<desc>` from `main`. Branch for anything that would break `main` mid-way (schema changes, cross-stack refactors, UI redesigns).
+- **`main` is protected** by a ruleset ("Protect main"): non-owners must open a PR with the `test` CI check passing, force-pushes/deletes are blocked. The owner (`zaheen4`) retains direct-push bypass.
 - **Always use PRs** for merges: `git push -u origin feat/xxx` then `gh pr create` then `gh pr merge --merge` (not squash).
 - **Before PR**: rebase on `main`.
 - **Commit messages**: Conventional Commits (`feat:`, `fix:`, `chore:`, `refactor:`, etc.) — enforced by commitlint + husky.
