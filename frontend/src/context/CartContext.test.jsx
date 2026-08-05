@@ -190,7 +190,14 @@ describe("CartContext — localStorage (guest mode)", () => {
         expect(JSON.parse(localStorage.getItem("cart"))).toEqual([]);
     });
 
-    it("clears cart when user logs out (becomes null)", () => {
+    it("clears cart when user logs out (becomes null)", async () => {
+        mockApi.get.mockResolvedValue({
+            data: {
+                items: [{ ...sampleItem, quantity: 1, stock: 10 }],
+                totalItems: 1,
+                totalPrice: 100,
+            },
+        });
         const { rerender } = render(
             <AuthContext.Provider value={{ user: { role: "User", username: "alice", token: "abc" } }}>
                 <CartProvider>
@@ -198,18 +205,21 @@ describe("CartContext — localStorage (guest mode)", () => {
                 </CartProvider>
             </AuthContext.Provider>
         );
-        act(() => {
-            screen.getByTestId("add-1").click();
+        await waitFor(() => {
+            expect(screen.getByTestId("count").textContent).toBe("1");
         });
-        expect(screen.getByTestId("count").textContent).toBe("1");
-        rerender(
-            <AuthContext.Provider value={{ user: null }}>
-                <CartProvider>
-                    <TestComponent />
-                </CartProvider>
-            </AuthContext.Provider>
-        );
-        expect(screen.getByTestId("count").textContent).toBe("0");
+        act(() => {
+            rerender(
+                <AuthContext.Provider value={{ user: null }}>
+                    <CartProvider>
+                        <TestComponent />
+                    </CartProvider>
+                </AuthContext.Provider>
+            );
+        });
+        await waitFor(() => {
+            expect(screen.getByTestId("count").textContent).toBe("0");
+        });
     });
 });
 
