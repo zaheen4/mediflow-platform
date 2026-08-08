@@ -1,12 +1,13 @@
 const jwt = require("jsonwebtoken");
 const { UnauthorizedError } = require("./errors");
+const config = require("../config/config");
 
 function generateToken(user_id, role) {
     const payload = {
         user_id: user_id,
         role: role,
     };
-    return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: process.env.JWT_EXPIRATION || "1h" });
+    return jwt.sign(payload, config.jwt.secretKey, { expiresIn: config.jwt.expiration });
 }
 
 function verifyToken(req, res, next) {
@@ -16,7 +17,7 @@ function verifyToken(req, res, next) {
     }
 
     try {
-        const decodedToken = jwt.verify(token.split(" ")[1], process.env.SECRET_KEY);
+        const decodedToken = jwt.verify(token.split(" ")[1], config.jwt.secretKey);
         req.user = decodedToken;
         next();
     } catch {

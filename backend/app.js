@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-require("dotenv").config();
+
+const config = require("./config/config");
 
 const authRoutes = require("./routes/auth_routes");
 const equipmentRoutes = require("./routes/equipment_routes");
@@ -15,16 +16,6 @@ const { specs, swaggerUi } = require("./utils/swagger");
 const { notFoundMiddleware, errorMiddleware } = require("./middleware/errorMiddleware");
 const logger = require("./utils/logger");
 
-function validateEnv() {
-    const required = ["SECRET_KEY", "DB_HOST", "DB_USER", "DB_PASSWORD", "DB_NAME"];
-    const missing = required.filter((key) => !process.env[key]);
-    if (missing.length > 0) {
-        logger.error(`Missing required environment variables: ${missing.join(", ")}`);
-        process.exit(1);
-    }
-}
-validateEnv();
-
 // Initialize Express app
 const app = express();
 
@@ -32,7 +23,7 @@ const app = express();
 app.use(helmet());
 
 // CORS configuration
-const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",") : ["http://localhost:5173"];
+const allowedOrigins = config.corsOrigins;
 
 app.use(
     cors({
@@ -78,7 +69,7 @@ app.use(errorMiddleware);
 
 // Run the Express app (only when executed directly, not during tests)
 if (require.main === module) {
-    const PORT = process.env.PORT || 5000;
+    const PORT = config.port;
     app.listen(PORT, () => {
         logger.info(`Server is running on port ${PORT}`);
     });

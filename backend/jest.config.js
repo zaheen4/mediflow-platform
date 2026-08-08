@@ -14,6 +14,7 @@ module.exports = {
     ],
     collectCoverageFrom: [
         "app.js",
+        "config/**/*.js",
         "db_connection.js",
         "middleware/**/*.js",
         "routes/**/*.js",

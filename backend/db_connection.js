@@ -1,12 +1,13 @@
 const mysql = require("mysql2/promise");
 const logger = require("./utils/logger");
+const config = require("./config/config");
 
 const pool = mysql.createPool({
     connectionLimit: 10,
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: config.db.host,
+    user: config.db.user,
+    password: config.db.password,
+    database: config.db.name,
 });
 
 (async () => {
