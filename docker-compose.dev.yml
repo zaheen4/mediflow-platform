@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: !reset null
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm ci && npx prisma migrate deploy && node --watch app.js"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - uploads_data:/app/uploads
+    environment:
+      NODE_ENV: development
+
+  frontend:
+    build: !reset null
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
+    ports: !override ["5173:5173"]
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      VITE_API_BASE_URL: http://localhost:5000
+    depends_on:
+      backend:
+        condition: service_healthy

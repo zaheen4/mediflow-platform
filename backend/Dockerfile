@@ -14,6 +14,10 @@ RUN npx prisma generate
 
 COPY . .
 
+RUN mkdir -p /app/uploads && chown -R node:node /app
+
+USER node
+
 EXPOSE 5000
 
 CMD ["sh", "-c", "npx prisma migrate deploy && node app.js"]
