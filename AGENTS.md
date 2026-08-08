@@ -57,5 +57,5 @@ Medical equipment e-commerce. Monorepo: `frontend/` (React/Vite, ESM) + `backend
 
 ## Env
 
-Backend `.env`: `PORT`, `CORS_ORIGINS`, `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `SECRET_KEY` (64-char hex), `JWT_EXPIRATION`
+Backend `.env`: `PORT`, `CORS_ORIGINS`, `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DATABASE_URL`, `SECRET_KEY` (64-char hex), `JWT_EXPIRATION`, `NODE_ENV`, `LOG_LEVEL`. Validated at startup by `backend/config/config.js` (fails fast with all problems listed).
 Frontend `.env`: `VITE_API_BASE_URL`

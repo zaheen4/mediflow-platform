@@ -1,6 +1,8 @@
 const levels = { error: 0, warn: 1, info: 2, debug: 3 };
 
-const currentLevel = levels[process.env.LOG_LEVEL] !== undefined ? levels[process.env.LOG_LEVEL] : levels.info;
+const { logLevel } = require("../config/config");
+
+const currentLevel = levels[logLevel] !== undefined ? levels[logLevel] : levels.info;
 
 function formatMessage(level, message, data) {
     const timestamp = new Date().toISOString();
